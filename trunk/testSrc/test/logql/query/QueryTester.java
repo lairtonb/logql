@@ -126,6 +126,26 @@ public class QueryTester extends TestCase{
 			TestUtil.throwNullPointerException(se);
 		}
 	}
+	
+	public void testStringSubQueryCondition() {
+		try{
+			Statement stmt = QConnection.createStatement();
+			stmt.executeQuery("from "+TestUtil.testDataDir()+"access.log use apache-common@"+TestUtil.testDataDir()+"config.xml");
+			ResultSet rs = stmt.executeQuery("select count(host) where host in "+
+					"(select host where referer like '%google%' and path = '/graph_gallery.html') and "+
+					"path = '/images/graph/graph1-s.JPG'");
+			assertTrue("No reult", rs.next());
+			assertTrue("Incorrect result, expecting 19, got: "+rs.getInt(1),rs.getInt(1)==19);
+			
+			rs = stmt.executeQuery("select count(host) where host in "+
+					"(select host where referer like '%google%' or referer like '%ask.com%') and "+
+					"path = '/images/graph/graph1-s.JPG'");
+			assertTrue("No reult", rs.next());
+			assertTrue("Incorrect result, expecting 21, got: "+rs.getInt(1),rs.getInt(1)==21);
+		}catch(SQLException se){
+			TestUtil.throwNullPointerException(se);
+		}
+	}
 
 	public void testIntSubQueries() {
 		// file 1 file 1
