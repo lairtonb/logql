@@ -72,6 +72,17 @@ public class IntIn implements ComparisonOperator {
 		}
 		String lval = val.toLowerCase();
 		if(lval.startsWith("select ")|| lval.startsWith("grep ")){
+			//softlink to CompileWhere
+			int loc = lval.indexOf(" where ");
+			if (loc > -1) {
+				String whereClause = val.substring(loc);
+				whereClause = whereClause.replaceAll(" ` ", " and ");
+				whereClause = whereClause.replaceAll(" ` ", " AND ");
+				whereClause = whereClause.replaceAll(" ~ ", " or ");
+				whereClause = whereClause.replaceAll(" ~ ", " OR ");
+
+				val = val.substring(0, loc) + whereClause;
+			}
 			StatementImpl exe = parent.clone();
 			StatementImpl.ExecuteMeta meta = exe.compile(val);
 			ArrayList<SelectFunction> funcs = new ArrayList<SelectFunction>(
