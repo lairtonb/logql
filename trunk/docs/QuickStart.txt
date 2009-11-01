@@ -1,0 +1,169 @@
+Quick Start:
+
+Please see below for quries on apache log files.
+
+=============================
+Sample Dataset
+=============================
+
+Date	Description	Account	In	Out
+10-Jan-07	Start	Misc	5000	0
+10-Jan-07	University tuition	College		2250
+10-Jan-07	Westwood	Rent		500
+11-Jan-07	Mc Donalds	Food		5
+11-Jan-07	SubWay	Food		10
+11-Jan-07	Denny's	Food		25
+12-Jan-07	Giants	Food		75
+12-Jan-07	Local books	College		195
+21-Jan-07	Giants	Food		54
+22-Jan-07	Gerold Books	Salary	200	
+23-Jan-07	Mc Donalds	Food		5
+25-Jan-07	Target	Cloths		58
+25-Jan-07	Denny's	Food		19
+28-Jan-07	Giants	Food		74
+29-Jan-07	Gerold Books	Salary	200	
+2-Feb-07	SubWay	Food		8
+2-Feb-07	Nike	cloths		25
+2-Feb-07	Denny's	Food		19
+
+
+=============================
+If you have Excel
+=============================
+1) Copy the Sample Dataset(above) Ctrl-C and paste it in Excel Ctrl-V.
+
+2) Save this as account.xls (any folder)
+
+3) Launch logQL by double clicking "logQL.jar".
+
+4) Tell logQL the file to query on: 
+      a) From the menu, select File > Open > Excel
+      b) Select "..." and choose the file from (2)
+      c) Click "OK"
+
+           ** OR **
+
+      Execute the following command:
+        FROM <fillPathHere>/account.xls USE excel  
+
+Now you can try some queries. See Queries section below
+
+=============================
+If you do *not* have excel
+=============================
+1) Copy the Sample Dataset(above) to a text editor and it save as "account.txt"
+
+2) Copy the following xml to "acc-meta.xml".
+
+	<logQLConfig>
+	    <sepConfig name="sepAccount" skipLines = "1" seperator="\t">
+		<field name="Date" type="date" format="dd-MMM-yy"/>
+		<field name="Description" type="string"/>
+		<field name="Account" type="string"/>
+		<field name="in" type="number"/>
+		<field name="out" type="number"/>
+	    </sepConfig>
+	</logQLConfig>
+
+3) Launch logQL by double clicking "logQL.jar". 
+
+4) Tell logQL the file to query on: 
+      a) From the menu, select File > Open > Custom
+      b) For File, click "..." and select account.txt
+      c) For Config File, click "..." and select acc-meta.txt
+      c) Click "OK"
+
+           ** OR **
+
+	Execute the following command:
+		FROM <fillPathHere>/account.txt USE <fillPathHere>/acc-meta.xml
+
+Now you can try some queries. See Queries section below
+
+=============================
+Queries
+=============================
+
+1) To see how much money was spent from each account
+      SELECT account, out
+
+   To get a pie chart, 
+     - From the menu, select Chart > Pie
+     - Click check box for "out".
+     - Click "OK"
+
+2) To check the day of week when the most money was spent
+      SELECT dayofweek(date), out
+
+3) Why is most money spent on Wednesday
+      SELECT description, out WHERE dayofweek(date) = "Wednesday"
+
+4) To check the day of week where money was spent on "Food":
+      SELECT dayofweek(date), out WHERE account = "Food"
+
+5) To check the break-up for account Food on Sunday
+      SELECT description, out WHERE account = "Food" and dayofweek(date) = "Sunday"
+
+6) To see all the individual items
+      GREP date, description, out WHERE account = "Food" and dayofweek(date) = "Sunday"
+
+7) To count how often you spend on cloths
+      SELECT count(*) WHERE tolowercase(account) = "cloths"
+
+=============================
+Analyzing Apache log files
+=============================
+
+First, we select the file to query on and the file's meta:
+
+    - From the menu, select File > Open > Custom
+    - For "File", click "..." and select your log file.
+    - For "Config File", click "..." and select meta.xml (part of logQL package)
+    - For "Config", select "apache-common" or "apache-combined" 
+      depending on your log file format.
+    - Click "OK"
+
+           ** OR **
+
+    Execute the From command:
+        FROM <file> USE  <congig>@./docs/meta.xml
+    Example:
+        FROM d:/logs/access_log.20060515.gz USE apache-combined@./docs/meta.xml
+
+Now we are ready to go:
+
+1) To see number of visitors
+      SELECT count(host)
+
+2) To see number of hits
+      SELECT count(*)
+
+3) To get number of hits per file
+      SELECT path, count(*)
+
+4) To see only HTML hits
+      SELECT path, count(*) WHERE path like "%.html"
+
+5) To see HTML hits refered by google
+      SELECT path, count(*) WHERE path like "%.html" AND referer like "%google.com%"
+
+6) To get breakup of hits, based on hour of day:
+      SELECT hourofday(date), count(*)
+
+   To get a pie chart, 
+     - From the menu, select Chart > Pie
+     - Click check box for "count(*)".
+     - Click "OK"
+
+To query across multiple files; you can specify the files seperated by commas,
+ in the from clause:
+
+     FROM <file1>, <file2>, <file3> USE <meta>@<configFile>
+
+For Example:
+
+    FROM d:/l/access_log.20060504.gz,d:/l/access_log.20060504.gz USE apache-combined@./docs/meta.xml
+
+You can also use wild cards. For Example:
+
+    FROM d:/logs/access_log.200605*.gz USE apache-combined@./docs/meta.xml

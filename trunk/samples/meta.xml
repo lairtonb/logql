@@ -1,0 +1,57 @@
+<logQLConfig>
+    <defaultConfig name="apache-combined"/>
+    <stdConfig name="apache-common">
+        <lineFormat variableChar="$">$host$ $ident$ $user$ [$date$] "$reqType$ $path$ $httpVer$" $respCode$ $bytes$</lineFormat>
+        <field name="host" type="string"/>
+        <field name="ident" type="string"/>
+        <field name="user" type="string"/>
+        <field name="date" type="date" format="dd/MMM/yyyy:HH:mm:ss Z"/>
+        <field name="reqType" type="string"/>
+        <field name="path" type="string"/>
+        <field name="httpVer" type="string"/>
+        <field name="respCode" type="int"/>
+        <field name="bytes" type="long"/>
+    </stdConfig>
+    <stdConfig name="apache-combined">
+        <lineFormat variableChar="$">$host$ $ident$ $user$ [$date$] "$reqType$ $path$ $httpVer$" $respCode$ $bytes$ "$referer$" "$userAgent$"</lineFormat>
+        <field name="host" type="string"/>
+        <field name="ident" type="string"/>
+        <field name="user" type="string"/>
+        <field name="date" type="date" format="dd/MMM/yyyy:HH:mm:ss Z"/>
+        <field name="reqType" type="string"/>
+        <field name="path" type="string"/>
+        <field name="httpVer" type="string"/>
+        <field name="respCode" type="int"/>
+        <field name="bytes" type="long"/>
+        <field name="referer" type="string"/>
+        <field name="userAgent" type="string"/>
+    </stdConfig>
+
+<!--                                          -->
+<!--              Examples                    -->
+<!--                                          -->
+
+<!--
+    <csvConfig name="csvAccount" skipLines = "1">
+        <field name="Date" type="date" format="dd-MMM-yy"/>
+        <field name="Description" type="string"/>
+        <field name="Account" type="string"/>
+        <field name="in" type="number"/>
+        <field name="out" type="number"/>
+    </csvConfig>
+    <sepConfig name="sepAccount" skipLines = "1" seperator="\t">
+        <field name="Date" type="date" format="dd-MMM-yy"/>
+        <field name="Description" type="string"/>
+        <field name="Account" type="string"/>
+        <field name="in" type="number"/>
+        <field name="out" type="number"/>
+    </sepConfig>
+    <xlConfig name="xlAccount" range="Sheet1!A1">
+        <field name="Date" type="date"/>
+        <field name="Description" type="string"/>
+        <field name="Account" type="string"/>
+        <field name="in" type="number"/>
+        <field name="out" type="number"/>
+    </xlConfig>
+-->
+</logQLConfig>
