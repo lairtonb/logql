@@ -36,7 +36,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -73,8 +72,8 @@ public class QueryFrame extends JFrame {
 		super("logQL");
 
 		String[] cpath = { "./lib/jfreechart.jar",
-				"./lib/poi-3.0.2-FINAL-20080204.jar",
-				"./lib/poi-scratchpad-3.0.2-FINAL-20080204.jar" };
+				"./lib/poi-3.5-FINAL-20090928.jar",
+				"./lib/poi-scratchpad-3.5-FINAL-20090928.jar"};
 		try {
 			for (String lib : cpath) {
 				File lpath = new File(lib);

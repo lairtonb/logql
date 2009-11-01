@@ -185,8 +185,8 @@ public class LogCLI {
 		}
 	}
 	public void setClasspath(){
-		String[] cpath = { "./lib/poi-3.0.2-FINAL-20080204.jar",
-				"./lib/poi-scratchpad-3.0.2-FINAL-20080204.jar" };
+		String[] cpath = { "./lib/poi-3.5-FINAL-20090928.jar",
+				"./lib/poi-scratchpad-3.5-FINAL-20090928.jar"};
 		try {
 			for (String lib : cpath) {
 				File lpath = new File(lib);

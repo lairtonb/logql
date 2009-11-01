@@ -10,7 +10,7 @@
       <property name="testClassesDir" value="testClasses"/>
       <property name="buildDir"		value="logQL"/>
       <property name="jar" value="${project_name}/${project_name}.jar"/>
-      <property name="libPath" value="../lib/jfreechart.jar;../lib/poi-3.0.2-FINAL-20080204.jar;../lib/poi-scratchpad-3.0.2-FINAL-20080204.jar"/>
+      <property name="libPath" value="../lib/jfreechart.jar;../lib/poi-3.5-FINAL-20090928.jar;../lib/poi-scratchpad-3.5-FINAL-20090928.jar"/>
       <property name="testLibPath" value="${libPath};../lib/junit-4.4.jar;${jar}"/>
       <mkdir dir="${classDir}" />
       <mkdir dir="${buildDir}" />
@@ -31,9 +31,9 @@
       <copy todir="${buildDir}/lib/">
       	<fileset file="../lib/jfreechart.jar"/>
       	<fileset file="../lib/jfreechart-LGPL.txt"/>
-      	<fileset file="../lib/poi-3.0.2-FINAL-20080204.jar"/>
+      	<fileset file="../lib/poi-3.5-FINAL-20090928.jar"/>
       	<fileset file="../lib/poi-LICENSE"/>
-      	<fileset file="../lib/poi-scratchpad-3.0.2-FINAL-20080204.jar"/>
+      	<fileset file="../lib/poi-scratchpad-3.5-FINAL-20090928.jar"/>
       </copy>
       <copy todir="${buildDir}/">
         <fileset dir="../docs">

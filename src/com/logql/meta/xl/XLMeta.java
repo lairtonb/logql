@@ -33,7 +33,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.AreaReference;
-import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.util.CellReference;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -55,7 +55,7 @@ public class XLMeta extends LogMeta {
 	HSSFWorkbook wb;
 	HSSFSheet sheet;
 	AreaReference range;
-	short minCol, maxCol;
+	int minCol, maxCol;
 	int minRow, maxRow;
 	boolean hasOnlyCellFields;
 	String sname;
@@ -106,18 +106,15 @@ public class XLMeta extends LogMeta {
 		if (ndrange != null) {
 			range = new AreaReference(ndrange.getNodeValue());
 			if (range != null) {
-				if (range.getCells().length < 1 || range.getCells().length >2)
-					throw new IllegalArgumentException(
-							"Invalid range, expecting single table or top left cell");
-				if (range.getCells().length == 2) {
-					CellReference cells[] = range.getCells();
-					sname = cells[0].getSheetName();
-					minRow = cells[0].getRow();
-					minCol = cells[0].getCol();
-					maxRow = cells[1].getRow() + 1;
-					maxCol = (short) (cells[1].getCol() + 1);
+				if (!range.isSingleCell()) {
+					CellReference cell = range.getFirstCell();
+					sname = cell.getSheetName();
+					minRow = cell.getRow();
+					minCol = cell.getCol();
+					maxRow = range.getLastCell().getRow() + 1;
+					maxCol = (short) (range.getLastCell().getCol() + 1);
 				} else {
-					CellReference cell = range.getCells()[0];
+					CellReference cell = range.getFirstCell();
 					if (cell.getSheetName() != null) {
 						sname = cell.getSheetName();
 					}
@@ -131,7 +128,7 @@ public class XLMeta extends LogMeta {
 			throw new IllegalArgumentException("Problem with range attribute");
 		NodeList nl = nd.getChildNodes();
 		orderedMeta = new ArrayList<XLFieldMeta>();
-		short col = minCol;
+		int col = minCol;
 		HashSet<String> fnames=new HashSet<String>();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node cnd = nl.item(i);
@@ -217,11 +214,12 @@ public class XLMeta extends LogMeta {
 	}
 
 	public void readConfig(InputStream f) throws IOException {
+		
 		wb = new HSSFWorkbook(f);
 		sheet = wb.getSheetAt(0);
-		if(range != null && range.getCells().length == 2){
-			CellReference cells[] = range.getCells();
-			sname = cells[0].getSheetName();
+		if(range != null && !range.isSingleCell()){
+			CellReference cell = range.getFirstCell();
+			sname = range.getFirstCell().getSheetName();
 			if(sname == null || sname.length() == 0){
 				sname = wb.getSheetName(0);
 			} else {
@@ -229,17 +227,17 @@ public class XLMeta extends LogMeta {
 			}
 			if(sheet == null)
 				throw new IllegalArgumentException("Unknown sheet: "+sname);
-			minRow = cells[0].getRow();
-			minCol = cells[0].getCol();
-			maxRow = cells[1].getRow() + 1;
-			maxCol = (short) (cells[1].getCol() + 1);
+			minRow = cell.getRow();
+			minCol = cell.getCol();
+			maxRow = range.getLastCell().getRow() + 1;
+			maxCol = (short) (range.getLastCell().getCol() + 1);
 		} else {
 			HSSFRow row = null;
 			if (range != null) {
-				if (range.getCells().length != 1)
+				if (!range.isSingleCell())
 					throw new IllegalArgumentException(
 							"Invalid range, expecting single table or top left cell");
-				CellReference cell = range.getCells()[0];
+				CellReference cell = range.getFirstCell();
 				if (cell.getSheetName() != null) {
 					sname = cell.getSheetName();
 					sheet = wb.getSheet(sname);
@@ -275,7 +273,7 @@ public class XLMeta extends LogMeta {
 		orderedMeta = new ArrayList<XLFieldMeta>();
 		fields = new ArrayList<FieldMeta>();
 		HashSet<String> fnames=new HashSet<String>();
-		for (short col = minCol; col < maxCol; col++) {
+		for (int col = minCol; col < maxCol; col++) {
 			XLFieldMeta xmeta = new XLFieldMeta();
 			HSSFCell cell = hrow.getCell(col);
 			if (cell == null) {
@@ -327,7 +325,7 @@ public class XLMeta extends LogMeta {
 			setCellType(tcell, xmeta);
 			xmeta.xlcolPos = col;
 			CellReference colRef = new CellReference(minRow,col);
-			xmeta.colRef = colRef.toString();
+			xmeta.colRef = colRef.formatAsString();
 			fields.add(xmeta);
 			orderedMeta.add(xmeta);
 		}
@@ -382,7 +380,7 @@ public class XLMeta extends LogMeta {
 				if(row == null){
 					throw new IllegalArgumentException("Unknown cell: "+name);
 				}
-				HSSFCell cell = row.getCell(cref.getCol());
+				HSSFCell cell = row.getCell((int)cref.getCol());
 				if(cell == null){
 					throw new IllegalArgumentException("Unknown cell: "+name);
 				}

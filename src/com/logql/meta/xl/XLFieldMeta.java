@@ -22,14 +22,14 @@ package com.logql.meta.xl;
 
 import java.util.ArrayList;
 
-import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.util.CellReference;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.logql.meta.FieldMeta;
 
 public class XLFieldMeta extends FieldMeta {
-	protected short xlcolPos;
+	protected int xlcolPos;
 	protected String colRef;
 	CellReference cref;
 	protected boolean isCellField;
