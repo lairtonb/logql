@@ -27,7 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.util.CellReference;
 
 import com.logql.meta.FlexiRow;
 import com.logql.meta.xl.XLFieldMeta;

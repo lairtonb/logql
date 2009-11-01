@@ -25,7 +25,7 @@ import com.logql.meta.std.StdReadField;
 import com.logql.util.Marker;
 
 public abstract class XLReadField  extends StdReadField implements XLReadInterface{
-	protected short xlColPos;
+	protected int xlColPos;
 
 	public XLReadField(int col){
 		super(col);

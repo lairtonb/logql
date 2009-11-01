@@ -26,7 +26,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.util.CellReference;
 
 import com.logql.meta.FlexiRow;
 import com.logql.meta.xl.XLFieldMeta;
@@ -48,7 +48,7 @@ public class XLCReadString extends XLReadField {
 	public boolean initRead(HSSFWorkbook workbook, HSSFSheet sheet) {
 		HSSFRow row = sheet.getRow(cref.getRow());
 		if (row != null) {
-			HSSFCell cell = row.getCell(cref.getCol());
+			HSSFCell cell = row.getCell((int)cref.getCol());
 			if(cell == null){
 				value = new byte[0];
 				return true;

@@ -25,7 +25,8 @@ import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.util.CellReference;
 
 import com.logql.meta.FlexiRow;
 import com.logql.meta.xl.XLFieldMeta;
@@ -42,18 +43,17 @@ public class XLCReadLong extends XLReadField{
 	}
 
 	public boolean initRead(HSSFWorkbook workbook, HSSFSheet sheet) {
-		evaluator = new HSSFFormulaEvaluator(sheet, workbook);
+		evaluator = new HSSFFormulaEvaluator(workbook);
 		HSSFRow row = sheet.getRow(cref.getRow());
 		if (row != null) {
-			HSSFCell cell = row.getCell(cref.getCol());
+			HSSFCell cell = row.getCell((int)cref.getCol());
 			if (cell == null) {
 				value = 0;
 			} else {
 				if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
 					return false;
 				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-					evaluator.setCurrentRow(row);
-					HSSFFormulaEvaluator.CellValue cval = evaluator
+					CellValue cval = evaluator
 							.evaluate(cell);
 					if (cval.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 						value = (long) cval.getNumberValue();
