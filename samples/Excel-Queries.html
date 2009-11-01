@@ -1,0 +1,16 @@
+<html>
+<body>
+<p>Table Range: <code>A9:K19</code></p>
+<ol>
+<li>Total amount spent<br/><code>SELECT k23</code></li>
+<li>Total amount spent per month<br/><code>select month(k4), k23</code></li>
+<li>Total amount spent in June<br/><code>select k23 WHERE month(k4) = 'june'</code></li>
+<li>Amount spent by each individual<br/><code>SELECT C6, k23</code></li>
+<li>Amount spent by Scott <br/><code>SELECT k23 WHERE tolowercase(C6) = 'scott'</code></li>
+<li>Amount spent by Scott in June<br/><code>SELECT k23 WHERE tolowercase(C6) = 'scott' and month(k4) = 'june'</code></li>
+<li>Amount spent on airfare<br/><code>SELECT Air WHERE Air > 0</code></li>
+<li>Air expenses with breakup on date<br/><code>SELECT date, Air where Air > 0</code></li>
+</ol>
+<img src="expense.JPG"/>
+</body>
+</html>
