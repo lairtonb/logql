@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <project name="logQL" basedir="." default="pack">
+
+    <!-- edit the following lines to your needs -->
+    <target name="init">
+      <property name="project_name" value="logQL"/>
+      <property name="srcDir" value="../src/"/>
+      <property name="testDir" value="../testSrc/"/>
+      <property name="classDir" value="classes"/>
+      <property name="testClassesDir" value="testClasses"/>
+      <property name="buildDir"		value="logQL"/>
+      <property name="jar" value="${project_name}/${project_name}.jar"/>
+      <property name="libPath" value="../lib/jfreechart.jar;../lib/poi-3.5-FINAL-20090928.jar;../lib/poi-scratchpad-3.5-FINAL-20090928.jar;../lib/poi-ooxml-3.5-FINAL-20090928.jar"/>
+      <property name="testLibPath" value="${libPath};../lib/junit-4.4.jar;${jar}"/>
+      <mkdir dir="${classDir}" />
+      <mkdir dir="${buildDir}" />
+      <mkdir dir="${testClassesDir}"/>
+      <copy file="../docs/License.txt" todir="${buildDir}"/>
+      <mkdir dir="${buildDir}/samples"/>
+      <copy todir="${buildDir}/samples">
+        <fileset dir="../samples">
+          <include name="Excel-Queries.html"/>
+	       	<include name="expense.JPG"/>
+          	<include name="ip-to-country.csv"/>
+        	<include name="meta.xml"/>
+        	<include name="style.css"/>
+        	<include name="web-stats-Queries.html"/>
+        </fileset>
+      </copy>
+      <mkdir dir="${buildDir}/lib" />
+      <copy todir="${buildDir}/lib/">
+      	<fileset file="../lib/jfreechart.jar"/>
+      	<fileset file="../lib/jfreechart-LGPL.txt"/>
+      	<fileset file="../lib/poi-3.5-FINAL-20090928.jar"/>
+      	<fileset file="../lib/poi-LICENSE"/>
+      	<fileset file="../lib/poi-scratchpad-3.5-FINAL-20090928.jar"/>
+      	<fileset file="../lib/poi-ooxml-3.5-FINAL-20090928.jar"/>
+      	<fileset file="../lib/ooxml-schemas-1.0.jar"/>
+      	<fileset file="../lib/dom4j-1.6.1.jar"/>
+        <fileset file="../lib/xmlbeans-2.3.0.jar"/>
+      	<fileset file="../lib/geronimo-stax-api_1.0_spec-1.0.jar"/>
+      </copy>
+      <copy todir="${buildDir}/">
+        <fileset dir="../docs">
+          <include name="Readme.txt"/>
+        </fileset>
+      </copy>
+    </target>
+
+    <!-- compile -->
+    <target name="compile" depends="init">
+      <javac srcdir="${srcDir}" includes="com/logql/**/*.java" 
+      	classpath="${libPath}"
+      	destdir="${classDir}"
+      	optimize="true"
+      	compiler="javac1.5">
+      </javac>
+    </target>
+
+    <!-- create .jar -->
+    <target name="jar" depends="compile">
+      <jar jarfile="${jar}"
+        basedir="${classDir}"
+        includes="com/logql/**"
+      	manifest="MANIFEST.MF">
+        <fileset dir="${srcDir}../">
+          <include name="images/*.gif"/>
+      	</fileset>
+        <fileset dir="../">
+          <include name="docs/QuickStart.txt"/>
+          <include name="docs/QueryManual.html"/>
+          <include name="docs/MetaManual.html"/>
+      	</fileset>
+      </jar>
+    </target>
+
+    <target name="compile-tests" depends="jar">
+      <javac srcdir="${testDir}" includes="test/logql/**/*.java" 
+      	classpath="${testLibPath}"
+      	destdir="${testClassesDir}"
+      	optimize="true"
+      	compiler="javac1.5">
+      </javac>
+    </target>
+
+    <target name="test" depends="compile-tests">
+      <junit printsummary="on">
+        <classpath path="${testLibPath};${testClassesDir}" />
+        <formatter type="brief" usefile="false" />
+        <test name="test.logql.query.AllTests" />
+      </junit>
+    </target>
+
+  	<target name="pack" depends="test">
+  		<zip destfile="${project_name}.zip"
+  			basedir="."
+  			includes="${project_name}/**">
+  		</zip>
+  	</target>
+
+    <!-- removes all that has been built -->
+    <target name="clean" depends="init">
+      <delete dir="${classDir}" includeEmptyDirs="true"/>
+      <delete dir="${buildDir}" includeEmptyDirs="true"/>
+      <delete dir="${testClassesDir}" includeemptydirs="true"/>
+    </target>
+  	
+  </project>
+
+  <!-- end file build.xml -->

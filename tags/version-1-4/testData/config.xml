@@ -1,0 +1,144 @@
+<logQLConfig>
+	<defaultConfig name="apache-common"/>
+	<stdConfig name="apache-common">
+		<lineFormat variableChar="$">$host$ $ident$ $user$ [$date$ $zone$] "$reqType$ $path$ $httpVer$" $respCode$ $bytes$ "$referer$" "$userAgent$"</lineFormat>
+		<field name="host" type="string"/>
+		<field name="ident" type="string"/>
+		<field name="user" type="string"/>
+		<field name="date" type="date" format="dd/MMM/yyyy:HH:mm:ss"/>
+		<field name="zone" type="string"/>
+		<field name="reqType" type="string"/>
+		<field name="path" type="string"/>
+		<field name="httpVer" type="string"/>
+		<field name="respCode" type="int"/>
+		<field name="bytes" type="long"/>
+		<field name="referer" type="string"/>
+		<field name="userAgent" type="string"/>
+		<derivedField name="searchEngine" source="referer" implementation="com.logql.interpret.derived.SearchEngine"/>
+		<derivedField name="country" source="host" implementation="com.logql.interpret.derived.Country"/>
+		<derivedField name="keyphrase" source="referer" implementation="com.logql.interpret.derived.KeyPhrase"/>
+		<derivedField name="refererDomain" source="referer" implementation="com.logql.interpret.derived.Domain"/>
+	</stdConfig>
+	<csvConfig name="csvTestData" skipLines = "2">
+		<field name="StartDate" type="date" format="yyyy/MM/dd-HH:mm:ss"/>
+		<field name="EndDate" type="date" format="yyyy/MM/dd-HH:mm:ss"/>
+		<field name="ServiceType" type="int"/>
+		<field name="Provider" type="int"/>
+		<field name="Consumer" type="int"/>
+		<field name="PeerConsumer" type="int"/>
+		<field name="Period" type="int"/>
+		<field name="ServiceLocation" type="int"/>
+		<field name="ConsumerLocation" type="int"/>
+		<field name="PeerConsumerLocation" type="int"/>
+		<field name="DEVICE" type="string"/>
+		<field name="QOS" type="int"/>
+		<field name="PROTOCOL" type="string"/>
+		<field name="SOURCE" type="string"/>
+		<field name="DESTINATION" type="string"/>
+		<field name="SrcBytes" type="long"/>
+		<field name="BILLABLE_BYTES" type="long"/>
+		<field name="Empty" type="int"/>
+		<field name="GroupId" type="int"/>
+		<field name="BillingRecordTypeId" type="int"/>
+		<field name="IsVolatile" type="int"/>
+		<field name="Amount" type="double"/>
+	</csvConfig>
+	<sepConfig name="sepTestData" skipLines = "2" seperator="\t">
+		<field name="StartDate" type="date" format="yyyy/MM/dd-HH:mm:ss"/>
+		<field name="EndDate" type="date" format="yyyy/MM/dd-HH:mm:ss"/>
+		<field name="ServiceType" type="int"/>
+		<field name="Provider" type="int"/>
+		<field name="Consumer" type="int"/>
+		<field name="PeerConsumer" type="int"/>
+		<field name="Period" type="int"/>
+		<field name="ServiceLocation" type="int"/>
+		<field name="ConsumerLocation" type="int"/>
+		<field name="PeerConsumerLocation" type="int"/>
+		<field name="DEVICE" type="string"/>
+		<field name="QOS" type="int"/>
+		<field name="PROTOCOL" type="string"/>
+		<field name="SOURCE" type="string"/>
+		<field name="DESTINATION" type="string"/>
+		<field name="SrcBytes" type="long"/>
+		<field name="BILLABLE_BYTES" type="long"/>
+		<field name="Empty" type="int"/>
+		<field name="GroupId" type="int"/>
+		<field name="BillingRecordTypeId" type="int"/>
+		<field name="IsVolatile" type="int"/>
+		<field name="Amount" type="double"/>
+	</sepConfig>
+	<sepConfig name="nfc" skipLines = "5" seperator="|">
+		<field name="srcaddr" type="string"/>
+		<field name="dstaddr" type="string"/>
+		<field name="srcport" type="integer"/>
+		<field name="dstport" type="integer"/>
+		<field name="prot" type="integer"/>
+		<field name="tos" type="string"/>
+		<field name="pkts" type="long"/>
+		<field name="octets" type="long"/>
+		<field name="flows" type="long"/>
+		<field name="starttime" type="date" format = "utc"/>
+		<field name="endtime" type="date" format = "utc"/>
+		<field name="activetime" type="date" format = "utc"/>
+	</sepConfig>
+<csvConfig name="perfCSv" skipLines = "1">
+    <field name="Date" type="date" format="EEE MMM dd kk:mm:ss zzz yyyy"/>
+    <field name="Realm" type="string"/>
+    <field name="NodeName" type="string"/>
+    <field name="SessionID" type="string"/>
+    <field name="User" type="string"/>
+    <field name="SourcePage" type="string"/>
+    <field name="SourceArea" type="string"/>
+    <field name="DestPage" type="string"/>
+    <field name="DestArea" type="string"/>
+    <field name="Type" type="string"/>
+    <field name="Status" type="string"/>
+    <field name="AppMetricName" type="string"/>
+    <field name="AppMetric" type="string"/>
+    <field name="AppDimension1" type="string"/>
+    <field name="AppDimension2" type="string"/>
+    <field name="AppInfo" type="string"/>
+    <field name="AQL_Queries" type="long"/>
+    <field name="AQL_QueriesMillis" type="long"/>
+    <field name="AQL_Rows_Fetched" type="long"/>
+    <field name="AQL_Rows_FetchedMillis" type="long"/>
+    <field name="ClusterRoot_Reconstitutions" type="long"/>
+    <field name="ClusterRoot_ReconstitutionsMillis" type="long"/>
+    <field name="Commits" type="long"/>
+    <field name="CommitsMillis" type="long"/>
+    <field name="ObjectCopies" type="long"/>
+    <field name="SQL_Updates" type="long"/>
+    <field name="SQL_UpdatesMillis" type="long"/>
+    <field name="SQL_Queries" type="long"/>
+    <field name="SQL_QueriesMillis" type="long"/>
+    <field name="UpdateAttrsBlob" type="long"/>
+    <field name="SQL_Commits" type="long"/>
+    <field name="SQL_CommitsMillis" type="long"/>
+    <field name="Response_Size" type="long"/>
+    <field name="Page_Generation" type="long"/>
+    <field name="RuntimeMillis" type="long"/>
+    <field name="dummy" type="string"/>
+</csvConfig>
+	<xlConfig name="xlRangeTestData" range="Sheet2!E9:M5007">
+		<field name="Date" type="date"/>
+		<field name="Consumer" type="int"/>
+		<field name="PeerConsumer" type="int"/>
+		<field name="DEVICE" type="string"/>
+		<field name="QOS" type="int"/>
+		<field name="PROTOCOL" type="string"/>
+		<field name="SOURCE" type="string"/>
+		<field name="DESTINATION" type="string"/>
+		<field name="SrcBytes" type="long"/>
+	</xlConfig>
+	<xlConfig name="xlCellTestData" range="Sheet2!E9">
+		<field name="Date" type="date"/>
+		<field name="Consumer" type="int"/>
+		<field name="PeerConsumer" type="int"/>
+		<field name="DEVICE" type="string"/>
+		<field name="QOS" type="int"/>
+		<field name="PROTOCOL" type="string"/>
+		<field name="SOURCE" type="string"/>
+		<field name="DESTINATION" type="string"/>
+		<field name="SrcBytes" type="long"/>
+	</xlConfig>
+</logQLConfig>
