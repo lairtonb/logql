@@ -246,6 +246,7 @@ public class QueryTab extends JPanel {
 			}
 		}catch(SQLException se){
 			JOptionPane.showMessageDialog(this, se.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			se.printStackTrace();
 		}finally{
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}

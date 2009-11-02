@@ -20,12 +20,12 @@
 */
 package com.logql.meta.xl.cell;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 
 import com.logql.meta.FlexiRow;
@@ -33,7 +33,7 @@ import com.logql.meta.xl.XLFieldMeta;
 import com.logql.meta.xl.XLReadField;
 
 public class XLCReadLong extends XLReadField{
-	HSSFFormulaEvaluator  evaluator;
+	FormulaEvaluator  evaluator;
 	long value;
 	CellReference cref;
 
@@ -42,20 +42,20 @@ public class XLCReadLong extends XLReadField{
 		cref = meta.getCref();
 	}
 
-	public boolean initRead(HSSFWorkbook workbook, HSSFSheet sheet) {
-		evaluator = new HSSFFormulaEvaluator(workbook);
-		HSSFRow row = sheet.getRow(cref.getRow());
+	public boolean initRead(Workbook workbook, Sheet sheet) {
+		evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+		Row row = sheet.getRow(cref.getRow());
 		if (row != null) {
-			HSSFCell cell = row.getCell((int)cref.getCol());
+			Cell cell = row.getCell((int)cref.getCol());
 			if (cell == null) {
 				value = 0;
 			} else {
-				if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+				if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 					return false;
-				} else if (cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
+				} else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 					CellValue cval = evaluator
 							.evaluate(cell);
-					if (cval.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+					if (cval.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 						value = (long) cval.getNumberValue();
 					}
 				} else {
@@ -66,7 +66,7 @@ public class XLCReadLong extends XLReadField{
 		return true;
 	}
 
-	public boolean read(HSSFRow hrow, FlexiRow row) {
+	public boolean read(Row hrow, FlexiRow row) {
 		row.longArr[arrPos] = value;
 
 		return true;

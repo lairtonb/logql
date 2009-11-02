@@ -25,9 +25,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.logql.meta.FieldMeta;
 import com.logql.meta.LogMeta;
@@ -35,7 +37,7 @@ import com.logql.meta.std.StdReader;
 import com.logql.meta.std.StdSeperator;
 
 public class XLReader extends StdReader {
-	HSSFSheet sheet;
+	Sheet sheet;
 	int currRow;
 	int maxRow;
 
@@ -47,7 +49,14 @@ public class XLReader extends StdReader {
 		errLines = new ArrayList<Integer>();
 		lineCount = 0;
 
-		HSSFWorkbook book = new HSSFWorkbook(in);
+		Workbook book;
+		try {
+			book = WorkbookFactory.create(in);
+		} catch (InvalidFormatException e) {
+			IOException ie = new IOException(e.getMessage());
+			ie.initCause(e);
+			throw ie;
+		}
 		finished = false;
 		sheet = book.getSheet(((XLMeta)meta).getSheetName());
 
@@ -67,7 +76,7 @@ public class XLReader extends StdReader {
 
 		for (int i = 0; i < buff.length; i++) {
 			lineCount++;
-			HSSFRow row = sheet.getRow(currRow++);
+			Row row = sheet.getRow(currRow++);
 			if (maxRow > 0) {
 				if (currRow > maxRow) {
 					finished = true;
@@ -89,7 +98,7 @@ public class XLReader extends StdReader {
 	protected void refillCells() {
 		pos = buffSize = 0;
 
-		HSSFRow row = sheet.getRow(currRow++);
+		Row row = sheet.getRow(currRow++);
 		finished = true;
 		if (row == null || !((XLReadInterface) reader).read(row, buff[0])) {
 			errLines.add(lineCount);

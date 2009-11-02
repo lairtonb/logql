@@ -20,9 +20,9 @@
 */
 package com.logql.meta.xl;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import com.logql.meta.FieldMeta;
 import com.logql.meta.FlexiRow;
@@ -39,7 +39,7 @@ public class XLSep extends StdSeperator implements XLReadInterface{
 		super(col);
 	}
 
-	public boolean initRead(HSSFWorkbook book, HSSFSheet sheet) {
+	public boolean initRead(Workbook book, Sheet sheet) {
 		if (left != null) {
 			if (!((XLReadInterface) left).initRead(book, sheet)
 					&& UtilMethods._AbortLine)
@@ -55,7 +55,7 @@ public class XLSep extends StdSeperator implements XLReadInterface{
 		return false;
 	}
 
-	public boolean read(HSSFRow hrow, FlexiRow row) {
+	public boolean read(Row hrow, FlexiRow row) {
 		if (left != null) {
 			if (!((XLReadInterface) left).read(hrow, row)
 					&& UtilMethods._AbortLine)

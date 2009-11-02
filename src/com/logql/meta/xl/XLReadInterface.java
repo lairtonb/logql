@@ -20,13 +20,13 @@
 */
 package com.logql.meta.xl;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import com.logql.meta.FlexiRow;
 
 public interface XLReadInterface {
-	public boolean initRead(HSSFWorkbook book, HSSFSheet sheet);
-	public boolean read(HSSFRow hrow,FlexiRow row);
+	public boolean initRead(Workbook book, Sheet sheet);
+	public boolean read(Row hrow,FlexiRow row);
 }
