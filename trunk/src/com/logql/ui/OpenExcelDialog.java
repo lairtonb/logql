@@ -382,11 +382,12 @@ private void initialize() {
 			public boolean accept(File pathName){
 				if(pathName.isDirectory())
 					return true;
-				return (pathName.getName().endsWith(".xls"));
+				String name =pathName.getName();
+				return (name.endsWith(".xls") || name.endsWith(".xlsx"));
 			}
 
 			public String getDescription() {
-				return "Microsoft Excel (*.xls)";
+				return "Microsoft Excel (*.xls, *.xlsx)";
 			}
 		});
 		if(choose.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
