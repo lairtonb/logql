@@ -186,7 +186,12 @@ public class LogCLI {
 	}
 	public void setClasspath(){
 		String[] cpath = { "./lib/poi-3.5-FINAL-20090928.jar",
-				"./lib/poi-scratchpad-3.5-FINAL-20090928.jar"};
+				"./lib/poi-scratchpad-3.5-FINAL-20090928.jar",
+				"./lib/poi-ooxml-3.5-FINAL-20090928.jar",
+				"./lib/xmlbeans-2.3.0.jar",
+				"./lib/ooxml-schemas-1.0.jar",
+				"./lib/dom4j-1.6.1.jar",
+				"./lib/geronimo-stax-api_1.0_spec-1.0.jar"};
 		try {
 			for (String lib : cpath) {
 				File lpath = new File(lib);

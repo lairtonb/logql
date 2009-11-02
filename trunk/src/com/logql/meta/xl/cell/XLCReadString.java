@@ -22,10 +22,10 @@ package com.logql.meta.xl.cell;
 
 import java.text.DecimalFormat;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 
 import com.logql.meta.FlexiRow;
@@ -45,18 +45,18 @@ public class XLCReadString extends XLReadField {
 		cref = meta.getCref();
 	}
 
-	public boolean initRead(HSSFWorkbook workbook, HSSFSheet sheet) {
-		HSSFRow row = sheet.getRow(cref.getRow());
+	public boolean initRead(Workbook workbook, Sheet sheet) {
+		Row row = sheet.getRow(cref.getRow());
 		if (row != null) {
-			HSSFCell cell = row.getCell((int)cref.getCol());
+			Cell cell = row.getCell((int)cref.getCol());
 			if(cell == null){
 				value = new byte[0];
 				return true;
 			}
 
-			if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
+			if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
 				value = format.format(cell.getNumericCellValue()).getBytes();
-			} else if(cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN){
+			} else if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN){
 				value = cell.getBooleanCellValue() ? TRUE : FALSE;
 			} else {
 				value = cell.getRichStringCellValue().getString().getBytes();
@@ -65,7 +65,7 @@ public class XLCReadString extends XLReadField {
 		return true;
 	}
 
-	public boolean read(HSSFRow hrow, FlexiRow row) {
+	public boolean read(Row hrow, FlexiRow row) {
 		if (row.charArr[arrPos].length < value.length)
 			row.charArr[arrPos] = new byte[value.length];
 		System.arraycopy(value, 0, row.charArr[arrPos], 0, value.length);

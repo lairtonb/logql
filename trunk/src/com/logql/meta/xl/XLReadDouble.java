@@ -20,37 +20,37 @@
 */
 package com.logql.meta.xl;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import com.logql.meta.FlexiRow;
 
 public class XLReadDouble extends XLReadField {
-	HSSFFormulaEvaluator  evaluator;
+	FormulaEvaluator  evaluator;
 
 	public XLReadDouble(XLFieldMeta meta) {
 		super(meta);
 	}
 
-	public boolean initRead(HSSFWorkbook book, HSSFSheet sheet) {
-		evaluator = new HSSFFormulaEvaluator(book);
+	public boolean initRead(Workbook book, Sheet sheet) {
+		evaluator = book.getCreationHelper().createFormulaEvaluator();
 		return true;
 	}
 
-	public boolean read(HSSFRow hrow, FlexiRow row) {
-		HSSFCell cell = hrow.getCell(xlColPos);
+	public boolean read(Row hrow, FlexiRow row) {
+		Cell cell = hrow.getCell(xlColPos);
 		if(cell == null){
 			row.doubleArr[arrPos] = 0;
 		} else {
-			if(cell.getCellType() == HSSFCell.CELL_TYPE_STRING){
+			if(cell.getCellType() == Cell.CELL_TYPE_STRING){
 				return false;
-			} else if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
+			} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 				CellValue cval = evaluator.evaluate(cell);
-				if(cval.getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
+				if(cval.getCellType() == Cell.CELL_TYPE_NUMERIC){
 					row.doubleArr[arrPos] = cval.getNumberValue();
 				}
 			} else {

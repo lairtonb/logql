@@ -26,13 +26,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.AreaReference;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -52,8 +54,8 @@ import com.logql.util.UtilMethods;
 public class XLMeta extends LogMeta {
 	int headerLine = 1;
 	ArrayList<XLFieldMeta> orderedMeta;
-	HSSFWorkbook wb;
-	HSSFSheet sheet;
+	Workbook wb;
+	Sheet sheet;
 	AreaReference range;
 	int minCol, maxCol;
 	int minRow, maxRow;
@@ -214,8 +216,14 @@ public class XLMeta extends LogMeta {
 	}
 
 	public void readConfig(InputStream f) throws IOException {
-		
-		wb = new HSSFWorkbook(f);
+		try {
+			wb = WorkbookFactory.create(f);
+		} catch (InvalidFormatException e) {
+			IOException ie = new IOException(e.getMessage());
+			ie.initCause(e);
+			throw ie;
+		}
+
 		sheet = wb.getSheetAt(0);
 		if(range != null && !range.isSingleCell()){
 			CellReference cell = range.getFirstCell();
@@ -232,7 +240,7 @@ public class XLMeta extends LogMeta {
 			maxRow = range.getLastCell().getRow() + 1;
 			maxCol = (short) (range.getLastCell().getCol() + 1);
 		} else {
-			HSSFRow row = null;
+			Row row = null;
 			if (range != null) {
 				if (!range.isSingleCell())
 					throw new IllegalArgumentException(
@@ -263,8 +271,8 @@ public class XLMeta extends LogMeta {
 			for (; maxCol < 255 && row.getCell(maxCol) != null; maxCol++)
 				;
 		}
-		HSSFRow hrow = sheet.getRow(minRow);
-		HSSFRow trow = sheet.getRow(minRow+1);
+		Row hrow = sheet.getRow(minRow);
+		Row trow = sheet.getRow(minRow+1);
 		if(hrow == null)
 			throw new IllegalArgumentException("Invalid sheet, header Row not found");
 		if(trow == null)
@@ -275,16 +283,16 @@ public class XLMeta extends LogMeta {
 		HashSet<String> fnames=new HashSet<String>();
 		for (int col = minCol; col < maxCol; col++) {
 			XLFieldMeta xmeta = new XLFieldMeta();
-			HSSFCell cell = hrow.getCell(col);
+			Cell cell = hrow.getCell(col);
 			if (cell == null) {
 				CellReference cr = new CellReference(minRow, col);
 				throw new IllegalArgumentException("Break in header at: " + cr.toString());
 			}
-			HSSFCell tcell = trow.getCell(col);
+			Cell tcell = trow.getCell(col);
 			if (tcell == null) {
 				int lrow = maxRow > 0 ? maxRow : 0xff;
 				for(short seekRow = (short)(minRow + 2); seekRow < lrow; seekRow++) {
-					HSSFRow sRow = sheet.getRow(seekRow);
+					Row sRow = sheet.getRow(seekRow);
 					if(sRow != null) {
 						tcell = sRow.getCell(col);
 						if(tcell != null) {
@@ -301,11 +309,11 @@ public class XLMeta extends LogMeta {
 			}
 
 			String colName = null;
-			if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 				colName = cell.getRichStringCellValue().getString();
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				colName = Double.toString(cell.getNumericCellValue());
-			} else if(cell.getCellType() == HSSFCell.CELL_TYPE_BLANK) {
+			} else if(cell.getCellType() == Cell.CELL_TYPE_BLANK) {
 				continue;
 			} else {
 				CellReference cr = new CellReference(minRow, col);
@@ -332,15 +340,15 @@ public class XLMeta extends LogMeta {
 		compute();
 	}
 
-	protected void setCellType(HSSFCell tcell, XLFieldMeta xmeta){
-		if (tcell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+	protected void setCellType(Cell tcell, XLFieldMeta xmeta){
+		if (tcell.getCellType() == Cell.CELL_TYPE_STRING) {
 			xmeta.setStorageType(FieldMeta.FIELD_STRING);
-		} else if (tcell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+		} else if (tcell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
 			xmeta.setStorageType(FieldMeta.FIELD_STRING);
-		} else if (tcell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
+		} else if (tcell.getCellType() == Cell.CELL_TYPE_ERROR) {
 			throw new IllegalArgumentException("Unsupported cell type: " + xmeta.getName());
 		} else {
-			if (HSSFDateUtil.isCellDateFormatted(tcell)) {
+			if (DateUtil.isCellDateFormatted(tcell)) {
 				xmeta.setStorageType(FieldMeta.FIELD_DATE);
 			} else if (tcell.getCellStyle().getDataFormat() == 
 					HSSFDataFormat.getBuiltinFormat("@")) {
@@ -376,11 +384,11 @@ public class XLMeta extends LogMeta {
 				XLFieldMeta xfm = new XLFieldMeta();
 				xfm.setCellField(true);
 				xfm.setCref(cref);
-				HSSFRow row = sheet.getRow(cref.getRow());
+				Row row = sheet.getRow(cref.getRow());
 				if(row == null){
 					throw new IllegalArgumentException("Unknown cell: "+name);
 				}
-				HSSFCell cell = row.getCell((int)cref.getCol());
+				Cell cell = row.getCell((int)cref.getCol());
 				if(cell == null){
 					throw new IllegalArgumentException("Unknown cell: "+name);
 				}

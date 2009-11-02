@@ -22,11 +22,11 @@ package com.logql.meta.xl.cell;
 
 import java.util.Date;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 
 import com.logql.meta.FlexiRow;
@@ -43,15 +43,15 @@ public class XLCReadDate extends XLReadField{
 		cref = meta.getCref();
 	}
 
-	public boolean initRead(HSSFWorkbook workbook, HSSFSheet sheet) {
-		HSSFRow row = sheet.getRow(cref.getRow());
+	public boolean initRead(Workbook workbook, Sheet sheet) {
+		Row row = sheet.getRow(cref.getRow());
 		if (row != null) {
-			HSSFCell cell = row.getCell(cref.getCol());
+			Cell cell = row.getCell(cref.getCol());
 			if (cell == null) {
 				value = BAD_VALUE;
 			} else {
-				if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING
-						|| !HSSFDateUtil.isCellDateFormatted(cell)) {
+				if (cell.getCellType() == Cell.CELL_TYPE_STRING
+						|| !DateUtil.isCellDateFormatted(cell)) {
 					value = BAD_VALUE;
 				}
 				value = cell.getDateCellValue();
@@ -60,7 +60,7 @@ public class XLCReadDate extends XLReadField{
 		return true;
 	}
 
-	public boolean read(HSSFRow hrow,FlexiRow row) {
+	public boolean read(Row hrow,FlexiRow row) {
 		row.dateArr[arrPos].clear();
 		row.dateArr[arrPos].setTime(value);
 
