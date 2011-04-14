@@ -66,19 +66,25 @@ public class QueryFrame extends JFrame {
 	JTextField status;
 	QueryTab qtab;
 	JDialog desc;
+	boolean hideQuery;
 	int tabCount = 1;
-	
-	public QueryFrame(){
+
+	public QueryFrame() {
+		this("./lib/");
+	}
+
+	public QueryFrame(String libPath){
 		super("logQL");
 
-		String[] cpath = { "./lib/jfreechart.jar",
-				"./lib/poi-3.5-FINAL-20090928.jar",
-				"./lib/poi-scratchpad-3.5-FINAL-20090928.jar",
-				"./lib/poi-ooxml-3.5-FINAL-20090928.jar",
-				"./lib/xmlbeans-2.3.0.jar",
-				"./lib/ooxml-schemas-1.0.jar",
-				"./lib/dom4j-1.6.1.jar",
-				"./lib/geronimo-stax-api_1.0_spec-1.0.jar"};
+		String[] cpath = { libPath+"/jfreechart.jar",
+				libPath + "/dom4j-1.6.1.jar",
+				libPath + "/geronimo-stax-api_1.0_spec-1.0.jar",
+				libPath + "/poi-3.6-20091214.jar",
+				libPath + "/poi-contrib-3.6-20091214.jar",
+				libPath + "/poi-ooxml-3.6-20091214.jar",
+				libPath + "/poi-ooxml-schemas-3.6-20091214.jar",
+				libPath + "/poi-scratchpad-3.6-20091214.jar",
+				libPath + "/xmlbeans-2.3.0.jar"};
 		try {
 			for (String lib : cpath) {
 				File lpath = new File(lib);
@@ -95,19 +101,19 @@ public class QueryFrame extends JFrame {
 		}
 	}
 
-	private static final Class[] parameters = new Class[]{URL.class};
+	private static final Class<?>[] parameters = new Class<?>[]{URL.class};
 
 	public static void addURL(URL u) throws Exception {
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader
 				.getSystemClassLoader();
-		Class sysclass = URLClassLoader.class;
+		Class<?> sysclass = URLClassLoader.class;
 
 		Method method = sysclass.getDeclaredMethod("addURL", parameters);
 		method.setAccessible(true);
 		method.invoke(sysloader, new Object[] { u });
 	}
 
-	public void init(){
+	public void init(JMenuItem item){
 		try{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}catch(Exception e){
@@ -126,32 +132,36 @@ public class QueryFrame extends JFrame {
 		JMenu fmenu = new JMenu("File");
 		fmenu.setMnemonic('F');
 		mbar.add(fmenu);
-
-		JMenu oitem = new JMenu("Open");
-		oitem.setMnemonic('O');
-		ActionListener openAction = new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				open(ae.getActionCommand());
-			}
-		};
-		JMenuItem eopen = new JMenuItem("Excel");
-		eopen.setMnemonic('E');
-		eopen.addActionListener(openAction);
-		oitem.add(eopen);
-		JMenuItem gopen = new JMenuItem("Custom");
-		gopen.setMnemonic('u');
-		gopen.addActionListener(openAction);
-		oitem.add(gopen);
-		JMenuItem copen = new JMenuItem("CSV");
-		copen.setMnemonic('C');
-		copen.addActionListener(openAction);
-		oitem.add(copen);
-		JMenuItem sopen = new JMenuItem("Delimited");
-		sopen.setMnemonic('D');
-		sopen.addActionListener(openAction);
-		oitem.add(sopen);
-		loadSampleConfig(oitem);
-		fmenu.add(oitem);
+		hideQuery = item != null;
+		if (!hideQuery) {
+			JMenu oitem = new JMenu("Open");
+			oitem.setMnemonic('O');
+			ActionListener openAction = new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					open(ae.getActionCommand());
+				}
+			};
+			JMenuItem eopen = new JMenuItem("Excel");
+			eopen.setMnemonic('E');
+			eopen.addActionListener(openAction);
+			oitem.add(eopen);
+			JMenuItem gopen = new JMenuItem("Custom");
+			gopen.setMnemonic('u');
+			gopen.addActionListener(openAction);
+			oitem.add(gopen);
+			JMenuItem copen = new JMenuItem("CSV");
+			copen.setMnemonic('C');
+			copen.addActionListener(openAction);
+			oitem.add(copen);
+			JMenuItem sopen = new JMenuItem("Delimited");
+			sopen.setMnemonic('D');
+			sopen.addActionListener(openAction);
+			oitem.add(sopen);
+			loadSampleConfig(oitem);
+			fmenu.add(oitem);
+		} else{
+			fmenu.add(item);
+		}
 
 		ActionListener saveAction = new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
@@ -180,23 +190,26 @@ public class QueryFrame extends JFrame {
 		
 		fmenu.add(save);
 		fmenu.addSeparator();
-		
-		JMenuItem desc = new JMenuItem("Describe");
-		desc.setMnemonic('D');
-		desc.setToolTipText("Show all columns");
-		desc.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				describe();
-			}
-		});
-		fmenu.add(desc);
-		fmenu.addSeparator();
-		
+
 		JCheckBoxMenuItem err = new JCheckBoxMenuItem("Error Lines");
-		err.setMnemonic('E');
-		err.setToolTipText("Show all the lines that were not read due to errors in the status bar");
-		fmenu.add(err);
-		fmenu.addSeparator();
+		if (!hideQuery) {
+			JMenuItem desc = new JMenuItem("Describe");
+			desc.setMnemonic('D');
+			desc.setToolTipText("Show all columns");
+			desc.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					describe();
+				}
+			});
+			fmenu.add(desc);
+			fmenu.addSeparator();
+
+			err.setMnemonic('E');
+			err.setToolTipText("Show all the lines that were not read "+
+					"due to errors in the status bar");
+			fmenu.add(err);
+			fmenu.addSeparator();
+		}
 
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.setMnemonic('x');
@@ -207,85 +220,55 @@ public class QueryFrame extends JFrame {
 		});
 		fmenu.add(exit);
 
-		JMenu chartMenu = new JMenu("Chart");
-		chartMenu.setMnemonic('C');
-        ActionListener chartListener = new ActionListener()
-        {
-            public void actionPerformed(ActionEvent ae)
-            {
-                qtab.chart(ae.getActionCommand());
-            }
-        };
+		if (!hideQuery) {
+			JMenu help = new JMenu("Help");
+			help.setMnemonic('H');
 
-        JMenuItem pie = new JMenuItem("Pie");
-        pie.setMnemonic('P');
-        pie.addActionListener(chartListener);
-        chartMenu.add(pie);
-        JMenuItem column = new JMenuItem("Column");
-        column.setMnemonic('C');
-        column.addActionListener(chartListener);
-        chartMenu.add(column);
-        JMenuItem bar = new JMenuItem("Bar");
-        bar.setMnemonic('B');
-        bar.addActionListener(chartListener);
-        chartMenu.add(bar);
-        JMenuItem area = new JMenuItem("Area");
-        area.setMnemonic('A');
-        area.addActionListener(chartListener);
-        chartMenu.add(area);
-        JMenuItem line = new JMenuItem("Line");
-        line.setMnemonic('L');
-        line.addActionListener(chartListener);
-        chartMenu.add(line);
+			JMenuItem quick = new JMenuItem("Quick Start");
+			quick.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					helpQuickStart();
+				}
+			});
+			help.add(quick);
 
-        mbar.add(chartMenu);
+			JMenuItem meta = new JMenuItem("Meta Files");
+			meta.setMnemonic('M');
+			meta.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					helpMeta();
+				}
+			});
+			help.add(meta);
 
-        JMenu help = new JMenu("Help");
-        help.setMnemonic('H');
-        JMenuItem quick = new JMenuItem("Quick Start");
-        quick.addActionListener(new ActionListener(){
-        	public void actionPerformed(ActionEvent ae){
-        		helpQuickStart();
-        	}
-        });
-        help.add(quick);
+			JMenuItem query = new JMenuItem("Queries");
+			query.setMnemonic('Q');
+			query.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					helpQuery();
+				}
+			});
+			help.add(query);
 
-        JMenuItem meta = new JMenuItem("Meta Files");
-        meta.setMnemonic('M');
-        meta.addActionListener(new ActionListener(){
-        	public void actionPerformed(ActionEvent ae){
-        		helpMeta();
-        	}
-        });
-        help.add(meta);
+			help.addSeparator();
 
-        JMenuItem query = new JMenuItem("Queries");
-        query.setMnemonic('Q');
-        query.addActionListener(new ActionListener(){
-        	public void actionPerformed(ActionEvent ae){
-        		helpQuery();
-        	}
-        });
-        help.add(query);
+			JMenuItem about = new JMenuItem("About");
+			about.setMnemonic('A');
+			about.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					AboutDialog adiag = new AboutDialog(QueryFrame.this);
+					adiag.setLocationRelativeTo(QueryFrame.this);
+					adiag.setVisible(true);
+				}
+			});
+			help.add(about);
 
-        help.addSeparator();
-
-		JMenuItem about = new JMenuItem("About");
-		about.setMnemonic('A');
-		about.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				AboutDialog adiag=new AboutDialog(QueryFrame.this);
-				adiag.setLocationRelativeTo(QueryFrame.this);
-				adiag.setVisible(true);
-			}
-		});
-		help.add(about);
-
-        mbar.add(help);
+			mbar.add(help);
+		}
 		setJMenuBar(mbar);
 
 		qtab = new QueryTab(this);
-		qtab.init(getSize());
+		qtab.init(getSize(), hideQuery);
 		qtab.setStatusBar(status);
 		qtab.setDetailedError(err);
 		getContentPane().add(qtab,BorderLayout.CENTER);
@@ -293,6 +276,10 @@ public class QueryFrame extends JFrame {
 
 		setLocationRelativeTo(null);
 		setVisible(true);
+	}
+
+	public void fireQuery(String query) {
+		qtab.fireQuery(query);
 	}
 
 	protected void loadSampleConfig(final JMenu fileMenu){
@@ -340,7 +327,7 @@ public class QueryFrame extends JFrame {
 				}
 				from.append(" USE ").append(config);
 				try {
-					qtab.fireQuery(from.toString());
+					qtab.executeQuery(from.toString());
 					describe();
 					status.setText(from.toString());
 					status.setCaretPosition(0);
@@ -444,7 +431,7 @@ public class QueryFrame extends JFrame {
 		while(ointerface.okClicked()){
 			String from = ointerface.getFromClause();
 			try{
-				qtab.fireQuery(from);
+				qtab.executeQuery(from);
 				describe();
 				status.setText(from);
 				status.setCaretPosition(0);

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: Count.java,v 1.2 2009/10/29 05:11:15 mreddy Exp $
+    $Id: Count.java,v 1.2 2009-10-29 05:11:15 mreddy Exp $
 */
 package com.logql.interpret.func;
 
@@ -46,7 +46,7 @@ public class Count extends SelectFunction {
 	public void compute(FlexiRow src, FlexiRow dst) {
 		switch (dataType) {
 		case _NoField:
-			dst.intArr[dstColPos]++;
+			dst.longArr[dstColPos]++;
 			break;
 		case _StringField: {
 			HashSet<ByteStringWrapper> set;
@@ -85,12 +85,12 @@ public class Count extends SelectFunction {
 
 	@Override
 	public void postProcess(FlexiRow prev, FlexiRow curr){
-		curr.intArr[dstColPos] = ((HashSet)curr.objArr[dstColPos2]).size();
+		curr.longArr[dstColPos] = ((HashSet)curr.objArr[dstColPos2]).size();
 	}
 
 	@Override
 	public int getStorageType() {
-		return FieldMeta.FIELD_INTEGER;
+		return FieldMeta.FIELD_LONG;
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class Count extends SelectFunction {
 
 	public void processFunctionArgs(LogMeta lm, String args) {
 		args = args.trim();
-		if(args.equals("*")){
+		if(args.length() == 0 || args.equals("*")){
 			dataType = _NoField;
 			return;
 		}

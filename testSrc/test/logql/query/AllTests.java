@@ -16,14 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: AllTests.java,v 1.2 2009/10/29 05:11:19 mreddy Exp $
+    $Id: AllTests.java,v 1.2 2009-10-29 05:11:19 mreddy Exp $
 */
 package test.logql.query;
 
 import test.logql.meta.CSVReaderTest;
 import test.logql.meta.SepReaderTest;
 import test.logql.meta.StdReaderTest;
-import test.logql.meta.XLReaderTest;
 import test.logql.util.ArgumentsTokenizerTest;
 import test.logql.util.FlexiRowTester;
 import test.logql.util.LineInputStreamTest;
@@ -40,7 +39,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(ArgumentsTokenizerTest.class);
 		suite.addTestSuite(LineInputStreamTest.class);
-		suite.addTestSuite(XLReaderTest.class);
+//		suite.addTestSuite(XLReaderTest.class);
 		suite.addTestSuite(UtilMethodsTest.class);
 		suite.addTestSuite(NumberParserTest.class);
 		suite.addTestSuite(WildCardMatchTest.class);
@@ -53,7 +52,7 @@ public class AllTests {
 
 		suite.addTestSuite(QueryTester.class);
 		suite.addTestSuite(QueryDateTester.class);
-		suite.addTestSuite(QueryXLTest.class);
+//		suite.addTestSuite(QueryXLTest.class);
 		suite.addTestSuite(StringFunctionTester.class);
 		suite.addTestSuite(DomainTest.class);
 

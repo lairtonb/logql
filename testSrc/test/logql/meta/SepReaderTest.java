@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: SepReaderTest.java,v 1.2 2009/10/29 05:11:07 mreddy Exp $
+    $Id: SepReaderTest.java,v 1.2 2009-10-29 05:11:07 mreddy Exp $
 */
 package test.logql.meta;
 
@@ -136,8 +136,8 @@ public class SepReaderTest extends TestCase {
 				rlineCount++;
 			}
 
-			assertTrue("Line counts do not match", rlineCount == 73);
-			assertTrue("Error count is wrong", reader.getErrors().length == 6);
+			assertTrue("Line counts do not match", rlineCount == 74);
+			assertTrue("Error count is wrong", reader.getErrors().size() == 5);
 		} catch (IOException ie) {
 			NullPointerException npe = new NullPointerException();
 			npe.initCause(ie);

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: LogMeta.java,v 1.2 2009/10/29 05:11:16 mreddy Exp $
+    $Id: LogMeta.java,v 1.2 2009-10-29 05:11:16 mreddy Exp $
 */
 package com.logql.meta;
 
@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -49,6 +50,10 @@ public abstract class LogMeta {
 	protected int intPos,datePos,longPos,floatPos,doublePos;
 
 	public abstract Reader getReader(Collection<FieldMeta> req);
+	
+	public Writer getWriter(List<FieldMeta> srcFields) {
+		throw new IllegalArgumentException("Not implemented");
+	}
 
 	public Reader compile(Collection<FieldMeta> req, ArrayList<StdReadField> read){
 		if(read.size()==0)

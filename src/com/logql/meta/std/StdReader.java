@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: StdReader.java,v 1.2 2009/10/29 05:11:12 mreddy Exp $
+    $Id: StdReader.java,v 1.2 2009-10-29 05:11:12 mreddy Exp $
 */
 package com.logql.meta.std;
 
@@ -26,13 +26,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import com.logql.meta.FieldMeta;
 import com.logql.meta.FlexiRow;
 import com.logql.meta.LogMeta;
 import com.logql.meta.Reader;
+import com.logql.util.InputStreamWrapper;
 import com.logql.util.LineInputStream;
 import com.logql.util.Marker;
+import com.logql.util.UtilMethods;
 
 public class StdReader implements Reader {
 	public static final int _BuffSize = 50;
@@ -129,12 +132,31 @@ public class StdReader implements Reader {
 		return false;
 	}
 
+	public void init(InputStreamWrapper wrapper) throws IOException {
+		init(wrapper.getInputStream());
+	}
+
 	public void init(InputStream fin) throws IOException {
 		init(fin, meta.getSkip());
 	}
 
 	public void init(InputStream fin, int skip) throws IOException {
-		errLines = new ArrayList<Integer>();
+		errLines = UtilMethods._ErrorDetails ? new ArrayList<Integer>():
+			new ArrayList<Integer>(){
+			    int lsize = 0;
+					public boolean add(Integer e) {
+						lsize++;
+						return true;
+					}
+
+					public int size() {
+						return lsize;
+					}
+					
+					public Integer get(int i) {
+						throw new IllegalArgumentException("Error details not enabled");
+					}
+			};
 		lineCount = skip;
 		finished = false;
 		in = new LineInputStream(fin);
@@ -187,12 +209,8 @@ public class StdReader implements Reader {
 		// not supported
 	}
 
-	public int[] getErrors() {
-		int[] ret = new int[errLines.size()];
-		for (int i = 0; i < errLines.size(); i++) {
-			ret[i] = errLines.get(i);
-		}
-		return ret;
+	public List<Integer> getErrors() {
+		return errLines;
 	}
 
 	public boolean next() {

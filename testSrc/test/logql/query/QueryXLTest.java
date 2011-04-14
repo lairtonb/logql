@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: QueryXLTest.java,v 1.2 2009/10/29 05:11:19 mreddy Exp $
+    $Id: QueryXLTest.java,v 1.2 2009-10-29 05:11:19 mreddy Exp $
 */
 package test.logql.query;
 
@@ -34,7 +34,7 @@ public class QueryXLTest extends TestCase {
 			stmt.executeQuery("from "+TestUtil.testDataDir()+"xltest/test1.xls use excel");
 			ResultSet rs = stmt.executeQuery("select count(*)");
 			assertTrue("No results",rs.next());
-			assertTrue("Count is wrong: "+rs.getInt(1), rs.getInt(1) == 4998);
+			assertTrue("Count is wrong: "+rs.getLong(1), rs.getLong(1) == 4998);
 		}catch(SQLException se){
 			TestUtil.throwNullPointerException(se);
 		}

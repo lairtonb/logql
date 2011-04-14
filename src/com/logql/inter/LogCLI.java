@@ -23,6 +23,7 @@ package com.logql.inter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -33,9 +34,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.logql.ui.QueryFrame;
+import com.logql.util.UtilMethods;
 
 public class LogCLI {
-	Writer writer = new CSVWriter();
+	ResultWriter writer = new CSVWriter();
 	Statement stmt = QConnection.createStatement();
 	boolean detailedErrors;
 	File output;
@@ -64,7 +66,9 @@ public class LogCLI {
 
 	public void processCmd(String cmd) {
 		String lcmd = cmd.toLowerCase();
-		if (lcmd.startsWith("desc")) {
+		if(lcmd == null || lcmd.trim().length()==0){
+			//do nothing
+		} else if (lcmd.startsWith("desc")) {
 			desc();
 		} else if(lcmd.equalsIgnoreCase("help")){
 			help();
@@ -81,6 +85,7 @@ public class LogCLI {
 			} else if (lcmd.startsWith("errordetails")) {
 				String opt = lcmd.substring("errordetails ".length()).trim();
 				detailedErrors = opt.equals("on");
+				UtilMethods._ErrorDetails = detailedErrors;
 				writer.setDetailedError(detailedErrors);
 			}
 		} else if (lcmd.startsWith("use ") || lcmd.startsWith("from ")) {
@@ -91,18 +96,24 @@ public class LogCLI {
 			}
 		} else if (lcmd.startsWith("select") || lcmd.startsWith("grep")) {
 			try {
+				long start = System.currentTimeMillis();
 				ResultSet op = stmt.executeQuery(cmd);
-				if (output == null)
-					writer.write(op, System.out);
-				else {
-					FileOutputStream out = new FileOutputStream(output, true);
-					writer.write(op, out);
-					out.close();
+				long end = System.currentTimeMillis();
+				if(op != null) {
+					if (output == null)
+						writer.write(op, System.out);
+					else {
+						FileOutputStream out = new FileOutputStream(output,
+								true);
+						writer.write(op, out);
+						out.close();
+					}
 				}
+				System.out.println("Time taken: "+ (end - start));
 			} catch (IOException ie) {
 				ie.printStackTrace();
 			} catch (SQLException se) {
-				System.err.println("Error: "+se.getMessage());
+				se.printStackTrace();
 			}
 		} else {
 			System.err.println("Unknown command");
@@ -162,12 +173,15 @@ public class LogCLI {
 
 			try {
 				ResultSet op = stmt.executeQuery(sb.toString());
-				if (output == null)
-					writer.write(op, System.out);
-				else {
-					FileOutputStream out = new FileOutputStream(output, false);
-					writer.write(op, out);
-					out.close();
+				if (op != null) {
+					if (output == null)
+						writer.write(op, System.out);
+					else {
+						FileOutputStream out = new FileOutputStream(output,
+								false);
+						writer.write(op, out);
+						out.close();
+					}
 				}
 			} catch (IllegalArgumentException iae) {
 				System.err.println("Error: "+iae.getMessage());
@@ -184,14 +198,35 @@ public class LogCLI {
 			System.exit(1);
 		}
 	}
+
+	public void processCommandsFromFile(String[] h) throws IOException {
+		File f=new File(h[1]);
+		BufferedReader in = new BufferedReader(new FileReader(f));
+		String buff = null;
+		while ((buff = in.readLine()) != null) {
+			if (buff.trim().length() > 0) {
+				Statement stmt = QConnection.createStatement();
+				System.out.println("Executing: " + buff);
+				try {
+					stmt.executeQuery(buff);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		in.close();
+	}
+
 	public void setClasspath(){
-		String[] cpath = { "./lib/poi-3.5-FINAL-20090928.jar",
-				"./lib/poi-scratchpad-3.5-FINAL-20090928.jar",
-				"./lib/poi-ooxml-3.5-FINAL-20090928.jar",
-				"./lib/xmlbeans-2.3.0.jar",
-				"./lib/ooxml-schemas-1.0.jar",
-				"./lib/dom4j-1.6.1.jar",
-				"./lib/geronimo-stax-api_1.0_spec-1.0.jar"};
+		String[] cpath = {"./lib/dom4j-1.6.1.jar",
+				"./lib/geronimo-stax-api_1.0_spec-1.0.jar",
+				"./lib/poi-3.6-20091214.jar",
+				"./lib/poi-contrib-3.6-20091214.jar",
+				"./lib/poi-ooxml-3.6-20091214.jar",
+				"./lib/poi-ooxml-schemas-3.6-20091214.jar",
+				"./lib/poi-scratchpad-3.6-20091214.jar",
+				"./lib/xmlbeans-2.3.0.jar"
+				};
 		try {
 			for (String lib : cpath) {
 				File lpath = new File(lib);
@@ -208,13 +243,10 @@ public class LogCLI {
 	public static void main(String h[]){
 		if (h.length == 0) {
 			QueryFrame qf = new QueryFrame();
-			qf.init();
+			qf.init(null);
 		} else {
 			LogCLI lcli = new LogCLI();
-			if (h.length > 1) {
-				lcli.setClasspath();
-				lcli.processCli(h);
-			} else if (h[0].equalsIgnoreCase("-c")) {
+			if (h[0].equalsIgnoreCase("-c")) {
 				lcli.setClasspath();
 				BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 				PrintStream out = System.out;
@@ -232,6 +264,15 @@ public class LogCLI {
 						e.printStackTrace();
 					}
 				}
+			} else if(h[0].equalsIgnoreCase("-f")){
+				try {
+					lcli.processCommandsFromFile(h);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else if (h.length > 1) {
+				lcli.setClasspath();
+				lcli.processCli(h);
 			} else {
 				String[] usage = {"java -jar logQL.jar     use to launch UI",
 						"java -jar logQL.jar -c     use to launch CLI",

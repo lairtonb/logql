@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: CSVReaderTest.java,v 1.3 2009/10/29 05:11:07 mreddy Exp $
+    $Id: CSVReaderTest.java,v 1.3 2009-10-29 05:11:07 mreddy Exp $
 */
 package test.logql.meta;
 
@@ -185,7 +185,7 @@ public class CSVReaderTest extends TestCase {
 			}
 
 			assertTrue("Line counts do not match", rlineCount == 73);
-			assertTrue("Error count is wrong", reader.getErrors().length == 6);
+			assertTrue("Error count is wrong", reader.getErrors().size() == 6);
 		} catch (IOException ie) {
 			TestUtil.throwNullPointerException(ie);
 		}

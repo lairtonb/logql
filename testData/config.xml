@@ -19,6 +19,67 @@
 		<derivedField name="keyphrase" source="referer" implementation="com.logql.interpret.derived.KeyPhrase"/>
 		<derivedField name="refererDomain" source="referer" implementation="com.logql.interpret.derived.Domain"/>
 	</stdConfig>
+	<binConfig name="bin-access_small.binlog">
+	    <field name="date" type="date" format="utc"/>
+	    <field name="path" type="string" joinFile="path.txt"/>
+	    <field name="respCode" type="int"/>
+	    <field name="bytes" type="long"/>
+	    <field name="host" type="string" joinFile="host.txt"/>
+	</binConfig>
+	<csvConfig name="aribaPerfCSV">
+	    <field name="Date" type="date" format="EEE MMM dd kk:mm:ss zzz yyyy"/>
+	    <field name="Realm" type="string"/>
+	    <field name="RealmType" type="string"/>
+	    <field name="NodeName" type="string"/>
+	    <field name="User" type="string"/>
+	    <field name="SourcePage" type="string"/>
+	    <field name="SourceArea" type="string"/>
+	    <field name="DestPage" type="string"/>
+	    <field name="DestArea" type="string"/>
+	    <field name="AQL_Queries" headerColumnName="AQL Queries" type="int"/>
+	    <field name="AQL_QueriesMillis" headerColumnName="AQL QueriesMillis" type="long"/>
+	    <field name="AQL_Rows_Fetched" headerColumnName="AQL Rows Fetched" type="int"/>
+	    <field name="AQL_Rows_FetchedMillis" headerColumnName="AQL Rows FetchedMillis" type="long"/>
+	    <field name="ClusterRoot_Reconstitutions" headerColumnName="ClusterRoot Reconstitutions" type="int"/>
+	    <field name="ClusterRoot_ReconstitutionsMillis" headerColumnName="ClusterRoot ReconstitutionsMillis" type="long"/>
+	    <field name="Commits" type="int"/>
+	    <field name="CommitsMillis" type="long"/>
+	    <field name="ObjectCopies" type="int"/>
+	    <field name="SQL_Updates" headerColumnName="SQL Updates" type="int"/>
+	    <field name="SQL_UpdatesMillis" headerColumnName="SQL UpdatesMillis" type="long"/>
+	    <field name="SQL_Queries" headerColumnName="SQL Queries" type="int"/>
+	    <field name="SQL_QueriesMillis" headerColumnName="SQL QueriesMillis" type="long"/>
+	    <field name="SQL_Commits" headerColumnName="SQL Commits" type="int"/>
+	    <field name="SQL_CommitsMillis" headerColumnName="SQL CommitsMillis" type="long"/>
+	    <field name="Page_Generation" headerColumnName="Page Generation" type="long"/>
+	    <field name="RuntimeMillis" type="long"/>
+	</csvConfig>
+	<binConfig name="aribaPerfBin">
+	    <field name="Date" type="date" format="utc"/>
+	    <field name="Realm" type="string" joinFile="realmMap.csv"/>
+	    <field name="User" type="string" joinFile="userMap.csv"/>
+	    <field name="SourcePage" type="string" joinFile="pageMap.csv"/>
+	    <field name="SourceArea" type="string" joinFile="areaMap.csv"/>
+	    <field name="DestPage" type="string" joinFile="pageMap.csv"/>
+	    <field name="DestArea" type="string" joinFile="areaMap.csv"/>
+	    <field name="AQL_Queries" type="int"/>
+	    <field name="AQL_QueriesMillis" type="long"/>
+	    <field name="AQL_Rows_Fetched" type="int"/>
+	    <field name="AQL_Rows_FetchedMillis" type="long"/>
+	    <field name="ClusterRoot_Reconstitutions" type="int"/>
+	    <field name="ClusterRoot_ReconstitutionsMillis" type="long"/>
+	    <field name="Commits" type="int"/>
+	    <field name="CommitsMillis" type="long"/>
+	    <field name="ObjectCopies" type="int"/>
+	    <field name="SQL_Updates" type="int"/>
+	    <field name="SQL_UpdatesMillis" type="long"/>
+	    <field name="SQL_Queries" type="int"/>
+	    <field name="SQL_QueriesMillis" type="long"/>
+	    <field name="SQL_Commits" type="int"/>
+	    <field name="SQL_CommitsMillis" type="long"/>
+	    <field name="Page_Generation" type="long"/>
+	    <field name="RuntimeMillis" type="long"/>
+	</binConfig>
 	<csvConfig name="csvTestData" skipLines = "2">
 		<field name="StartDate" type="date" format="yyyy/MM/dd-HH:mm:ss"/>
 		<field name="EndDate" type="date" format="yyyy/MM/dd-HH:mm:ss"/>
@@ -119,6 +180,29 @@
     <field name="RuntimeMillis" type="long"/>
     <field name="dummy" type="string"/>
 </csvConfig>
+	<binConfig name="RealmUserBin">
+	    <field name="Date" type="date" format="utc"/>
+	    <field name="Realm" type="string" joinFile="realmMap.csv"/>
+	    <field name="User" type="string" joinFile="userMap.csv"/>
+ 	    <field name="Hits" type="long" isMetric="true"/>  <!-- derived -->
+	    <field name="AQL_Queries" type="long"/>
+	    <field name="AQL_QueriesMillis" type="long"/>
+	    <field name="AQL_Rows_Fetched" type="int"/>
+	    <field name="AQL_Rows_FetchedMillis" type="long"/>
+	    <field name="ClusterRoot_Reconstitutions" type="int"/>
+	    <field name="ClusterRoot_ReconstitutionsMillis" type="long"/>
+	    <field name="Commits" type="int"/>
+	    <field name="CommitsMillis" type="long"/>
+	    <field name="ObjectCopies" type="int"/>
+	    <field name="SQL_Updates" type="int"/>
+	    <field name="SQL_UpdatesMillis" type="long"/>
+	    <field name="SQL_Queries" type="int"/>
+	    <field name="SQL_QueriesMillis" type="long"/>
+	    <field name="SQL_Commits" type="int"/>
+	    <field name="SQL_CommitsMillis" type="long"/>
+	    <field name="Page_Generation" type="long"/>
+	    <field name="RuntimeMillis" type="long"/>
+	</binConfig>
 	<xlConfig name="xlRangeTestData" range="Sheet2!E9:M5007">
 		<field name="Date" type="date"/>
 		<field name="Consumer" type="int"/>
