@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: OpenExcelDialog.java,v 1.2 2009/10/29 05:11:18 mreddy Exp $
+    $Id: OpenExcelDialog.java,v 1.2 2009-10-29 05:11:18 mreddy Exp $
 */
 package com.logql.ui;
 
@@ -382,12 +382,11 @@ private void initialize() {
 			public boolean accept(File pathName){
 				if(pathName.isDirectory())
 					return true;
-				String name =pathName.getName();
-				return (name.endsWith(".xls") || name.endsWith(".xlsx"));
+				return (pathName.getName().endsWith(".xls"));
 			}
 
 			public String getDescription() {
-				return "Microsoft Excel (*.xls, *.xlsx)";
+				return "Microsoft Excel (*.xls)";
 			}
 		});
 		if(choose.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){

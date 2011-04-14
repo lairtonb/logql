@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: FlexiRowTester.java,v 1.4 2009/10/29 05:11:18 mreddy Exp $
+    $Id: FlexiRowTester.java,v 1.4 2009-10-29 05:11:18 mreddy Exp $
 */
 package test.logql.util;
 

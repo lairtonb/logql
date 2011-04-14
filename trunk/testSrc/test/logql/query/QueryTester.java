@@ -97,7 +97,7 @@ public class QueryTester extends TestCase{
 					"(select host where referer like '%google%') and "+
 					"path = '/images/graph/graph1-s.JPG'");
 			assertTrue("No reult", rs.next());
-			assertTrue("Incorrect result, expecting 21, got: "+rs.getInt(1),rs.getInt(1)==21);
+			assertTrue("Incorrect result, expecting 21, got: "+rs.getLong(1),rs.getLong(1)==21);
 		}catch(SQLException se){
 			TestUtil.throwNullPointerException(se);
 		}
@@ -109,7 +109,7 @@ public class QueryTester extends TestCase{
 					"host from "+TestUtil.testDataDir()+"access.log use apache-common@"+TestUtil.testDataDir()+"config.xml "+
 					" where referer like '%google%') and path = '/images/graph/graph1-s.JPG'");
 			assertTrue("No reult", rs.next());
-			assertTrue("Incorrect result, expecting 21, got: "+rs.getInt(1),rs.getInt(1)==21);
+			assertTrue("Incorrect result, expecting 21, got: "+rs.getLong(1),rs.getLong(1)==21);
 		}catch(SQLException se){
 			TestUtil.throwNullPointerException(se);
 		}
@@ -121,7 +121,7 @@ public class QueryTester extends TestCase{
 					"host from "+TestUtil.testDataDir()+"google-ref.txt use cSv) and path = "+
 					"'/images/graph/graph1-s.JPG'");
 			assertTrue("No reult", rs.next());
-			assertTrue("Incorrect result, expecting 21, got: "+rs.getInt(1),rs.getInt(1)==21);
+			assertTrue("Incorrect result, expecting 21, got: "+rs.getLong(1),rs.getLong(1)==21);
 		}catch(SQLException se){
 			TestUtil.throwNullPointerException(se);
 		}
@@ -135,13 +135,13 @@ public class QueryTester extends TestCase{
 					"(select host where referer like '%google%' and path = '/graph_gallery.html') and "+
 					"path = '/images/graph/graph1-s.JPG'");
 			assertTrue("No reult", rs.next());
-			assertTrue("Incorrect result, expecting 19, got: "+rs.getInt(1),rs.getInt(1)==19);
+			assertTrue("Incorrect result, expecting 19, got: "+rs.getLong(1),rs.getLong(1)==19);
 			
 			rs = stmt.executeQuery("select count(host) where host in "+
 					"(select host where referer like '%google%' or referer like '%ask.com%') and "+
 					"path = '/images/graph/graph1-s.JPG'");
 			assertTrue("No reult", rs.next());
-			assertTrue("Incorrect result, expecting 21, got: "+rs.getInt(1),rs.getInt(1)==21);
+			assertTrue("Incorrect result, expecting 21, got: "+rs.getLong(1),rs.getLong(1)==21);
 		}catch(SQLException se){
 			TestUtil.throwNullPointerException(se);
 		}
@@ -155,7 +155,7 @@ public class QueryTester extends TestCase{
 			ResultSet rs = stmt.executeQuery("select count(consumerlocation) where"+
 					" consumerlocation in (select peerconsumerlocation where srcBytes > 40000)");
 			assertTrue("No reult", rs.next());
-			assertTrue("Incorrect result, expecting 22, got: "+rs.getInt(1),rs.getInt(1)==22);
+			assertTrue("Incorrect result, expecting 22, got: "+rs.getLong(1),rs.getLong(1)==22);
 		}catch(SQLException se){
 			TestUtil.throwNullPointerException(se);
 		}
@@ -170,7 +170,7 @@ public class QueryTester extends TestCase{
 					"csvTestData@"+TestUtil.testDataDir()+"config.xml "+
 					"where srcBytes > 40000)");
 			assertTrue("No reult", rs.next());
-			assertTrue("Incorrect result, expecting 1, got: "+rs.getInt(1),rs.getInt(1)==1);
+			assertTrue("Incorrect result, expecting 1, got: "+rs.getLong(1),rs.getLong(1)==1);
 		}catch(SQLException se){
 			TestUtil.throwNullPointerException(se);
 		}
@@ -185,7 +185,7 @@ public class QueryTester extends TestCase{
 					"consumerlocation in (select peerconsumerlocation  "+
 					"where srcBytes > 40000)");
 			assertTrue("No reult", rs.next());
-			assertTrue("Incorrect result, expecting 1, got: "+rs.getInt(1),rs.getInt(1)==1);
+			assertTrue("Incorrect result, expecting 1, got: "+rs.getLong(1),rs.getLong(1)==1);
 		}catch(SQLException se){
 			TestUtil.throwNullPointerException(se);
 		}

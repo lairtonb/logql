@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: TestUtil.java,v 1.3 2009/11/01 02:06:16 mreddy Exp $
+    $Id: TestUtil.java,v 1.3 2009-11-01 02:06:16 mreddy Exp $
 */
 package test.logql.query;
 
@@ -57,7 +57,7 @@ public class TestUtil {
 				int resultCount = 0;
 				while(rs.next()){
 					resultCount++;
-					rowCount += rs.getInt(2);
+					rowCount += rs.getLong(2);
 				}
 				int reqLines = Integer.parseInt(query[1]);
 				int reqTotal = Integer.parseInt(query[2]);

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: CSVMeta.java,v 1.3 2009/10/29 05:11:12 mreddy Exp $
+    $Id: CSVMeta.java,v 1.3 2009-10-29 05:11:12 mreddy Exp $
 */
 package com.logql.meta.std;
 
@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -65,7 +67,6 @@ public class CSVMeta extends LogMeta {
 			read.add(new CSVEmptySeperator(FIELD_SEPERATOR_ID));
 		else
 			read.add(new EmptySeperator(FIELD_SEPERATOR_ID));
-		
 
 		return compile(req,read);
 	}
@@ -110,6 +111,42 @@ public class CSVMeta extends LogMeta {
 		hasQuotes = q;
 	}
 
+	public void mergeConfig (InputStream f, boolean validate) throws IOException {
+		HashMap<String, CSVFieldMeta> map = new HashMap<String, CSVFieldMeta>();
+		for(FieldMeta meta: orderedMeta) {
+			CSVFieldMeta cmeta = (CSVFieldMeta) meta;
+			map.put(cmeta.getHeaderColumnName(), cmeta);
+		}
+		headerLine = 1;
+		readConfig(f);
+		
+		replaceValues(fields, map);
+		replaceValues(orderedMeta, map);
+		//validate
+		for(FieldMeta meta: orderedMeta) {
+			CSVFieldMeta cmeta = (CSVFieldMeta)meta;
+			map.remove(cmeta.getHeaderColumnName());
+		}
+		if(map.size() > 0 && validate){
+			StringBuffer sb = new StringBuffer();
+			for(FieldMeta meta:map.values()){
+				sb.append(meta.getName());
+			}
+			throw new IllegalArgumentException("Unmapped fields from config (not found in file):"+sb.toString());
+		}
+		compute();
+	}
+	
+	private void replaceValues(List<FieldMeta> fields,
+			HashMap<String, CSVFieldMeta> map) {
+		for (int i = 0; i < fields.size(); i++) {
+			CSVFieldMeta cmeta = map.get(fields.get(i).getName());
+			if (cmeta != null) {
+				fields.set(i, cmeta);
+			}
+		}
+	}
+
 	public void readConfig(String args, InputStream f) throws IOException {
 		headerLine = 1;
 		if (args != null && args.length() > 0) {
@@ -133,12 +170,11 @@ public class CSVMeta extends LogMeta {
 			throw new IOException("File Empty?");
 		ArgumentsTokenizer at = new ArgumentsTokenizer(line);
 		String tok;
-		fields = new ArrayList<FieldMeta>();
 		int id = 0;
 		orderedMeta = new ArrayList<FieldMeta>();
 		fields = new ArrayList<FieldMeta>();
 		while ((tok = at.nextToken()) != null) {
-			FieldMeta meta = new FieldMeta();
+			FieldMeta meta = getFieldMetaObject();
 			if (headerLine < 0)
 				meta.setName(Integer.toString(id + 1));
 			else
@@ -153,5 +189,9 @@ public class CSVMeta extends LogMeta {
 	
 	public int getSkip() {
 		return headerLine;
+	}
+	
+	public FieldMeta getFieldMetaObject() {
+		return new CSVFieldMeta();
 	}
 }

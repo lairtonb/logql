@@ -16,23 +16,19 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: UtilMethods.java,v 1.3 2009/11/01 01:39:06 mreddy Exp $
+    $Id: UtilMethods.java,v 1.3 2009-11-01 01:39:06 mreddy Exp $
 */
 package com.logql.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -51,30 +47,8 @@ import com.logql.meta.LogMeta;
 public class UtilMethods {
 	public static boolean _AbortLine = true;
 	public static boolean _CheckUpdate = true;
-
-	public static boolean hasNewVersion() {
-		try {
-			if (_CheckUpdate) {
-				_CheckUpdate = false;
-				HttpURLConnection con = (HttpURLConnection) new URL(
-						"http://www.logql.com/checkUpdate.php?ver=1.4")
-						.openConnection();
-				con.setRequestProperty("UserAgent", "logQL");
-				Properties properties = new Properties();
-				InputStream in = con.getInputStream();
-				properties.load(in);
-				in.close();
-				con.disconnect();
-				String update = properties.getProperty("needsUpdate");
-				if (update.equals("true")) {
-					return true;
-				}
-			}
-		} catch (Exception e) {
-
-		}
-		return false;
-	}
+	private static Boolean _debugMode;
+	public static boolean _ErrorDetails = false;
 
 	public static byte[] hexToBytes(String str) {
 		if (str == null) {
@@ -108,6 +82,13 @@ public class UtilMethods {
 			}
 			return str.toUpperCase();
 		}
+	}
+
+	public static boolean isDebugMode(){
+		if(_debugMode == null){
+			_debugMode = Boolean.parseBoolean(System.getProperty("logql.debug"));
+		}
+		return _debugMode;
 	}
 
 	public static int ltrim(byte[] barr, Marker mark) {
@@ -324,7 +305,10 @@ public class UtilMethods {
 		int multimin;
 		int digit;
 
-		if (e - s <= 0)
+		int l = e -s;
+		if(l == 0)
+			return 0;
+		if (l < 0)
 		    throw new NumberFormatException("");
 
 		if(arr[s]=='-'){
@@ -383,7 +367,10 @@ public class UtilMethods {
 		long multimin;
 		int digit;
 
-		if (e - s <= 0)
+		int l = e -s;
+		if(l == 0)
+			return 0;
+		if (l < 0)
 		    throw new NumberFormatException("");
 
 		if(arr[s]=='-'){
@@ -483,11 +470,11 @@ public class UtilMethods {
 		return k != mark.startPos - 1;
 	}
 
-	public static String getErrorString(Map<String, int[]> err, boolean detErr) {
+	public static String getErrorString(Map<String, List<Integer>> err, boolean detErr) {
 		if (err != null && err.size() > 0) {
 			int errCount = 0;
-			for (int[] t : err.values()) {
-				errCount += t.length;
+			for (List<Integer> t : err.values()) {
+				errCount += t.size();
 			}
 			StringBuffer sb = new StringBuffer();
 			sb.append("Error Lines: ").append(errCount);
@@ -495,8 +482,8 @@ public class UtilMethods {
 				sb.append("{");
 				for (String file : err.keySet()) {
 					sb.append(file).append("= (");
-					int[] lines = err.get(file);
-					for (int line : lines)
+					List<Integer> lines = err.get(file);
+					for (Integer line : lines)
 						sb.append(line).append(", ");
 					sb.append("),");
 				}

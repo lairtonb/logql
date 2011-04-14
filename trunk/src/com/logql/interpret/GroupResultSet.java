@@ -16,11 +16,14 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: GroupResultSet.java,v 1.2 2009/10/29 05:11:07 mreddy Exp $
+    $Id: GroupResultSet.java,v 1.2 2009-10-29 05:11:07 mreddy Exp $
 */
 package com.logql.interpret;
 
+import java.sql.NClob;
+import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLXML;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -128,5 +131,65 @@ public class GroupResultSet extends ResultSetImpl {
 	public boolean first() throws SQLException {
 		pos = 1;
 		return true;
+	}
+
+	public NClob getNClob(int arg0) throws SQLException {
+		// no op
+		return null;
+	}
+
+	public NClob getNClob(String arg0) throws SQLException {
+		// no op
+		return null;
+	}
+
+	public RowId getRowId(int arg0) throws SQLException {
+		// no op
+		return null;
+	}
+
+	public RowId getRowId(String arg0) throws SQLException {
+		// no op
+		return null;
+	}
+
+	public SQLXML getSQLXML(int arg0) throws SQLException {
+		// no op
+		return null;
+	}
+
+	public SQLXML getSQLXML(String arg0) throws SQLException {
+		// no op
+		return null;
+	}
+
+	public void updateNClob(int arg0, NClob arg1) throws SQLException {
+		// no op
+		
+	}
+
+	public void updateNClob(String arg0, NClob arg1) throws SQLException {
+		// no op
+		
+	}
+
+	public void updateRowId(int arg0, RowId arg1) throws SQLException {
+		// no op
+		
+	}
+
+	public void updateRowId(String arg0, RowId arg1) throws SQLException {
+		// no op
+		
+	}
+
+	public void updateSQLXML(int arg0, SQLXML arg1) throws SQLException {
+		// no op
+		
+	}
+
+	public void updateSQLXML(String arg0, SQLXML arg1) throws SQLException {
+		// no op
+		
 	}
 }

@@ -16,20 +16,23 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: Reader.java,v 1.2 2009/10/29 05:11:16 mreddy Exp $
+    $Id: Reader.java,v 1.2 2009-10-29 05:11:16 mreddy Exp $
 */
 package com.logql.meta;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.GregorianCalendar;
+import java.util.List;
+
+import com.logql.util.InputStreamWrapper;
 
 public interface Reader {
+	public void init(InputStreamWrapper in) throws IOException;
 	public void init(InputStream in)throws IOException;
-	public void init(InputStream in, int skip)throws IOException;
 	public void first();
 	public void last();
-	public int[] getErrors();
+	public List<Integer> getErrors();
 	public boolean hasNext();
 	public boolean next();
 	public String getString(int col);

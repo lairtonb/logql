@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: CSVEmptySeperator.java,v 1.2 2009/10/29 05:11:12 mreddy Exp $
+    $Id: CSVEmptySeperator.java,v 1.2 2009-10-29 05:11:12 mreddy Exp $
 */
 package com.logql.meta.std;
 
@@ -42,6 +42,8 @@ public class CSVEmptySeperator extends StdSeperator {
 		if (mark.startPos != mark.lineStartPos) {
 			if (carr[mark.startPos - 1] == '\"')
 				sepPos = UtilMethods.indexOf(carr, quote, mark);
+			else
+				sepPos = UtilMethods.indexOf(carr, comma, mark);
 		} else {
 			//first column
 			sepPos = mark.startPos;

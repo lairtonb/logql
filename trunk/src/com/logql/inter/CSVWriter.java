@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: CSVWriter.java,v 1.2 2009/10/29 04:43:39 mreddy Exp $
+    $Id: CSVWriter.java,v 1.2 2009-10-29 04:43:39 mreddy Exp $
 */
 package com.logql.inter;
 
@@ -26,11 +26,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import com.logql.util.UtilMethods;
 
-public class CSVWriter implements Writer {
+public class CSVWriter implements ResultWriter {
 
 	boolean detErr;
 
@@ -64,7 +65,7 @@ public class CSVWriter implements Writer {
 			}
 			bout.write("\r\n");
 		}
-		Map<String, int[]> errors = ((ResultSetMetaLQ)rs.getMetaData()).getErrorLines();
+		Map<String, List<Integer>> errors = ((ResultSetMetaLQ)rs.getMetaData()).getErrorLines();
 		bout.write("\r\n " + UtilMethods.getErrorString(errors, detErr));
 		bout.write("\r\n");
 

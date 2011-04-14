@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: StatementImpl.java,v 1.2 2009/10/29 05:11:07 mreddy Exp $
+    $Id: StatementImpl.java,v 1.2 2009-10-29 05:11:07 mreddy Exp $
 */
 package com.logql.interpret;
 
@@ -27,19 +27,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
+import com.logql.interpret.func.SelectFunction;
 import com.logql.interpret.wfunc.Operator;
 import com.logql.meta.Config;
 import com.logql.meta.FieldMeta;
 import com.logql.meta.FlexiRow;
 import com.logql.meta.LogMeta;
 import com.logql.meta.Reader;
+import com.logql.meta.Writer;
 import com.logql.meta.std.CSVMeta;
 import com.logql.meta.std.SepMeta;
-import com.logql.meta.xl.XLMeta;
 import com.logql.util.InputStreamWrapper;
 import com.logql.util.UtilMethods;
 
@@ -56,6 +57,8 @@ public class StatementImpl implements Statement {
 		public SelectMeta smeta;
 		public HashSet<FieldMeta> requiredFields;
 		public LogMeta currConfig;
+		public File outputFile;
+		public LogMeta outputConfig;
 		public List<InputStreamWrapper> input;
 	}
 
@@ -98,11 +101,15 @@ public class StatementImpl implements Statement {
 	}
 
 	public ResultSet executeQuery(String query) throws SQLException{
+		if(UtilMethods.isDebugMode()){
+			System.out.println("logql [DEBUG]:"+query);
+		}
 		if (externalOp(query)) {
 			return null;
 		}
 		try{
 			final ExecuteMeta emeta = compile(query);
+			ResultSet ret = null;
 			if (emeta.group instanceof GrepData) {
 				// if grep command, spawn a thread to processess
 				new Thread() {
@@ -117,11 +124,18 @@ public class StatementImpl implements Statement {
 					} catch (InterruptedException ie) {
 					}
 				}
-				return emeta.group.getResultSet();
+				ret = emeta.group.getResultSet();
 			} else {
 				// for group/select command
-				return execute(emeta);
+				ret = execute(emeta);
 			}
+			if (emeta.outputConfig != null) {
+			    writeOutput(emeta, ret);
+			    emeta.outputConfig = null;
+			    emeta.outputFile = null;
+				ret = null;
+			}
+			return ret;
 		} catch(IllegalArgumentException ie){
 			SQLException se = new SQLException(ie.getMessage());
 			se.initCause(ie);
@@ -153,6 +167,7 @@ public class StatementImpl implements Statement {
 		boolean grepCommand = false;
 		String selectPart = null;
 		String fromClause = null;
+		String toClause = null;
 		String useClause = null;
 		String whereClause = null;
 		String orderClause = null;
@@ -167,6 +182,12 @@ public class StatementImpl implements Statement {
 		if (loc > -1) {
 			whereClause = query.substring(loc + 7).trim();
 			query = query.substring(0, loc);
+			lquery = lquery.substring(0, loc);
+		}
+		loc = lquery.indexOf(" to ");
+		if(loc > -1) {
+			toClause = query.substring(loc + 4).trim();
+			query = query.substring(0,loc);
 			lquery = lquery.substring(0, loc);
 		}
 		loc = lquery.indexOf(" use ");
@@ -229,7 +250,12 @@ public class StatementImpl implements Statement {
 
 		emeta.group = emeta.smeta.getGroupBy();
 		emeta.ops = emeta.smeta.getOps();
-		
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		////////////// To clause
+		if(toClause != null && toClause.length() > 0)
+			processTo(emeta, toClause);
+
 		//////////////////////////////////////////////////////////////////////////////////////
 		///////////// Order clause
 		if(orderClause != null && orderClause.trim().length() > 0){
@@ -246,7 +272,7 @@ public class StatementImpl implements Statement {
 		return emeta;
 	}
 
-	public void processFrom(ExecuteMeta emeta, String fromClause){
+	protected void processFrom(ExecuteMeta emeta, String fromClause){
 		if (fromClause == null || fromClause.length() == 0)
 			throw new IllegalArgumentException("Empty from clause");
 
@@ -284,7 +310,7 @@ public class StatementImpl implements Statement {
 		throw new SQLException("Not implemented");
 	}
 
-	public void processUse(ExecuteMeta emeta, String usingClause) {
+	protected void processUse(ExecuteMeta emeta, String usingClause) {
 		if (usingClause == null || usingClause.length() == 0)
 			throw new IllegalArgumentException("Empty use clause");
 
@@ -307,7 +333,23 @@ public class StatementImpl implements Statement {
 				throw new IllegalArgumentException(
 						"Error loading config file: " + f.toString());
 			}
-			emeta.currConfig = tconf.getConfig(usingClause.substring(0, aloc));
+			String prefix = usingClause.substring(0,aloc);
+			if (prefix.toLowerCase().startsWith("csv5") || prefix.toLowerCase().startsWith("csv6")) {
+				emeta.currConfig = tconf.getConfig(usingClause.substring(4,	aloc));
+				if(!(emeta.currConfig instanceof CSVMeta)){
+					throw new IllegalArgumentException("This is only supported for csv config");
+				}
+				try {
+					((CSVMeta)emeta.currConfig).mergeConfig(emeta.input.get(0).getInputStream(),prefix.startsWith("csv5"));
+				} catch (IOException e) {
+					IllegalArgumentException ie = new IllegalArgumentException("Error reading file: " 
+							+ emeta.input.get(0).toString());
+					ie.initCause(e);
+					throw ie;
+				}
+			} else {
+				emeta.currConfig = tconf.getConfig(usingClause.substring(0,	aloc));
+			}
 		} else if (lusing.equals("csv") || lusing.equals("excel")
 				|| (lusing.indexOf("(") > -1 && (lusing.startsWith("csv") 
 						|| usingClause.startsWith("sep") || usingClause.startsWith("excel")))) {
@@ -330,14 +372,17 @@ public class StatementImpl implements Statement {
 					SepMeta smeta = new SepMeta();
 					smeta.readConfig(args, emeta.input.get(0).getInputStream());
 					emeta.currConfig = smeta;
-				} else if (lusing.startsWith("excel")){
+				} /*else if (lusing.startsWith("excel")){
 					XLMeta xmeta = new XLMeta();
 					xmeta.readConfig(args, emeta.input.get(0).getInputStream());
 					emeta.currConfig = xmeta;
-				}
-			} catch (IOException ie) {
-				throw new IllegalArgumentException("Error reading file: " 
+				}*/
+			} catch (IOException e) {
+				IllegalArgumentException ie = 
+					new IllegalArgumentException("Error reading file: " 
 						+ emeta.input.get(0).toString());
+				ie.initCause(e);
+				throw ie;
 			}
 		} else {
 			if (emeta.currConfig == null) {
@@ -363,12 +408,90 @@ public class StatementImpl implements Statement {
 			throw new IllegalArgumentException("No meta configuration loaded");
 	}
 
+	protected void processTo (ExecuteMeta emeta, String toClause) {
+		int touseLoc = toClause.toLowerCase().indexOf(" use ");
+		if (touseLoc == -1) {
+			throw new IllegalArgumentException("use clause required after to");
+		}
+		File outFile = new File(toClause.substring(0,touseLoc).trim());
+		toClause = toClause.substring(touseLoc).trim();
+		ExecuteMeta binMeta = new ExecuteMeta();
+		processUse(binMeta, toClause);
+		emeta.outputConfig = binMeta.currConfig;
+		emeta.outputFile = outFile;
+
+		// validate on available fields on query instead of config
+		List<FieldMeta> srcFields = getFieldsInQuery(emeta.smeta);
+		List<FieldMeta> outFields = getAvailableOutputFields(emeta);
+		if(srcFields.size() > outFields.size()) {
+			throw new IllegalArgumentException("All fields in query do not match fields in output config");
+		}
+	}
+
+	private static List<FieldMeta> getFieldsInQuery (SelectMeta smeta) {
+		ArrayList<FieldMeta> ret = new ArrayList<FieldMeta>();
+		for (SelectFunction sf : smeta.group.func)
+			if (sf.getRequiredField() != null)
+				ret.add(sf.getRequiredField());
+		for (SelectFunction sf : smeta.ops.ops){
+			if (sf.getRequiredField() != null) {
+				FieldMeta fld = sf.getRequiredField();
+				if(fld.getStorageType() != sf.getStorageType()) {
+					FieldMeta dummy = new FieldMeta();
+					dummy.setStorageType(sf.getStorageType());
+					dummy.setName(sf.getAlias());
+					ret.add(dummy);
+				} else {
+					ret.add(sf.getRequiredField());
+				}
+			} else {
+				//this is a function, create a dummy object
+				FieldMeta dummy = new FieldMeta();
+				dummy.setName(sf.getAlias());
+				dummy.setStorageType(sf.getStorageType());
+				ret.add(dummy);
+			}
+		}
+				
+		return ret;
+	}
+
+	private static List<FieldMeta> getAvailableOutputFields (ExecuteMeta emeta) {
+		List<FieldMeta> resultMeta = getFieldsInQuery(emeta.smeta);
+		HashMap<String, FieldMeta> srcNameMeta = new HashMap<String, FieldMeta>();
+		for(FieldMeta res : resultMeta){
+			srcNameMeta.put(res.getName(), res);
+		}
+		ArrayList<FieldMeta> availableFields = new ArrayList<FieldMeta>();
+		for(FieldMeta binField: emeta.outputConfig.getFields()) {
+			FieldMeta fromField = srcNameMeta.get(binField.getName());
+			if(fromField != null) {
+				if(fromField.getActualType() != binField.getActualType()){
+					if(! (fromField.getActualType() == FieldMeta.FIELD_INTEGER && binField.getActualType() ==FieldMeta.FIELD_LONG))
+					throw new IllegalArgumentException("Field type mismatch: "
+							+ binField.getName());
+				}
+				availableFields.add(fromField);
+			}
+		}
+		return availableFields;
+	}
+
+	protected void writeOutput(ExecuteMeta emeta, ResultSet rs) throws IOException, SQLException {
+		List<FieldMeta> availableFields = getAvailableOutputFields(emeta);
+		Writer out = emeta.outputConfig.getWriter(availableFields);
+
+		//execute queries
+		out.init(emeta.outputFile);
+		out.write(rs);
+	}
+
 	public ResultSet execute(ExecuteMeta emeta) {
 		Reader reader = emeta.currConfig.getReader(emeta.requiredFields);
-		HashMap<String, int[]> errors = new HashMap<String, int[]>();
+		HashMap<String, List<Integer>> errors = new HashMap<String, List<Integer>>();
 		for (InputStreamWrapper iwrap : emeta.input) {
 			try {
-				reader.init(iwrap.getInputStream());
+				reader.init(iwrap);
 			} catch (IOException ie) {
 				ie.printStackTrace();
 				throw new IllegalArgumentException(
@@ -398,7 +521,7 @@ public class StatementImpl implements Statement {
 					}
 				}
 			}
-			if (reader.getErrors().length > 0) {
+			if (reader.getErrors().size() > 0) {
 				errors.put(iwrap.toString(), reader.getErrors());
 			}
 		}

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: ResultSetMetaImpl.java,v 1.2 2009/10/29 05:11:07 mreddy Exp $
+    $Id: ResultSetMetaImpl.java,v 1.2 2009-10-29 05:11:07 mreddy Exp $
 */
 package com.logql.interpret;
 
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.logql.inter.ResultSetMetaLQ;
@@ -38,7 +39,7 @@ public class ResultSetMetaImpl implements ResultSetMetaLQ {
 	String sname;
 	ArrayList<ColumnData> cdata = new ArrayList<ColumnData>();
 	HashMap<String, ColumnData> nameMap=new HashMap<String, ColumnData>();
-	Map<String, int[]> errors;
+	Map<String, List<Integer>> errors;
 	int lineCount;
 
 	public ResultSetMetaImpl(SelectMeta smeta) {
@@ -141,11 +142,11 @@ public class ResultSetMetaImpl implements ResultSetMetaLQ {
 		return false;
 	}
 
-	public Map<String, int[]> getErrorLines(){
+	public Map<String, List<Integer>> getErrorLines(){
 		return errors;
 	}
 	
-	public void setErrors(Map<String, int[]> err){
+	public void setErrors(Map<String, List<Integer>> err){
 		errors = err;
 	}
 

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: HTMLWriter.java,v 1.2 2009/10/29 05:11:17 mreddy Exp $
+    $Id: HTMLWriter.java,v 1.2 2009-10-29 05:11:17 mreddy Exp $
 */
 package com.logql.inter;
 
@@ -26,11 +26,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import com.logql.util.UtilMethods;
 
-public class HTMLWriter implements Writer {
+public class HTMLWriter implements ResultWriter {
 	private final String _Style = "<style type=\"text/css\">\n" +
 		"th {\n" +
 		"	color:#555580;\n" +
@@ -93,7 +94,7 @@ public class HTMLWriter implements Writer {
 			bout.write("</TR>");
 		}
 		bout.write("</TABLE>");
-		Map<String, int[]> errors = ((ResultSetMetaLQ)rs.getMetaData()).getErrorLines();
+		Map<String, List<Integer>> errors = ((ResultSetMetaLQ)rs.getMetaData()).getErrorLines();
 		bout.write("<P>"+ UtilMethods.getErrorString(errors, detError)+"</P>");
 		bout.flush();
 	}

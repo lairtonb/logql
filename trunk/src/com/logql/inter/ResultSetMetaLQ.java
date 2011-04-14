@@ -16,14 +16,15 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: ResultSetMetaLQ.java,v 1.2 2009/10/29 05:11:17 mreddy Exp $
+    $Id: ResultSetMetaLQ.java,v 1.2 2009-10-29 05:11:17 mreddy Exp $
 */
 package com.logql.inter;
 
 import java.sql.ResultSetMetaData;
+import java.util.List;
 import java.util.Map;
 
 public interface ResultSetMetaLQ extends ResultSetMetaData {
-	public Map<String, int[]> getErrorLines();
+	public Map<String, List<Integer>> getErrorLines();
 	public int getLineCount();
 }

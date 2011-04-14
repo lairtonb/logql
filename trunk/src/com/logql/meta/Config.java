@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: Config.java,v 1.2 2009/10/29 05:11:16 mreddy Exp $
+    $Id: Config.java,v 1.2 2009-10-29 05:11:16 mreddy Exp $
 */
 package com.logql.meta;
 
@@ -25,7 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,33 +37,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.logql.meta.binary.BinaryMeta;
 import com.logql.meta.std.CSVMeta;
 import com.logql.meta.std.SepMeta;
 import com.logql.meta.std.StdMeta;
-import com.logql.meta.xl.XLMeta;
 
 public class Config {
-	private static final String DEFAULT_CONFIG_FILE="config.xml"; 
-
 	private static Logger log=Logger.getLogger(Config.class.getName());
 
 	protected String defaultConfig;
-	protected HashMap<String, LogMeta> metas=new HashMap<String, LogMeta>();
-	private static Config conf;
+	protected LinkedHashMap<String, LogMeta> metas=new LinkedHashMap<String, LogMeta>();
 
 	private Config(){}
-
-	public static Config getInstance(){
-		if(conf==null){
-			conf=new Config();
-			try{
-				conf = load(DEFAULT_CONFIG_FILE);
-			}catch(Exception ie){
-//				log.log(Level.SEVERE,"Error loading default config",ie);
-			}
-		}
-		return conf;
-	}
 
 	public static Config load(String filePath) throws IOException, SAXException{
 		Config ret = new Config();
@@ -80,7 +65,7 @@ public class Config {
 				Node nd=nl.item(i);
 				if(nd.getNodeType()==Node.COMMENT_NODE||nd.getNodeType()==Node.TEXT_NODE)
 					continue;
-				
+
 				LogMeta req = null;
 				if (nd.getNodeName().equals("defaultConfig")) {
 					ret.defaultConfig = nd.getAttributes().getNamedItem("name")
@@ -91,8 +76,10 @@ public class Config {
 					req = new CSVMeta();
 				} else if (nd.getNodeName().equals("sepConfig")) {
 					req = new SepMeta();
-				} else if (nd.getNodeName().equals("xlConfig")) {
-					req = new XLMeta();
+//				} else if (nd.getNodeName().equals("xlConfig")) {
+//					req = new XLMeta();
+				} else if (nd.getNodeName().equals("binConfig")) {
+					req = new BinaryMeta();
 				}
 				if (req != null) {
 					req.readConfig(nd);
@@ -108,6 +95,7 @@ public class Config {
 		}
 		return null;
 	}
+
 	public LogMeta getConfig() {
 		if (defaultConfig == null && metas.size() == 1)
 			return metas.values().iterator().next();

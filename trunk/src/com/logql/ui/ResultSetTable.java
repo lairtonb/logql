@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: ResultSetTable.java,v 1.2 2009/10/29 05:11:18 mreddy Exp $
+    $Id: ResultSetTable.java,v 1.2 2009-10-29 05:11:18 mreddy Exp $
 */
 package com.logql.ui;
 
@@ -41,7 +41,7 @@ public class ResultSetTable extends AbstractTableModel {
 	boolean ascending;
 	String[] header;
 	int[] jcolTypes;
-	Class[] colTypes;
+	Class<?>[] colTypes;
 
 	public void updateResultSet(ResultSet rs) throws SQLException{
 		ResultSetMetaLQ meta = (ResultSetMetaLQ)rs.getMetaData();
@@ -60,17 +60,29 @@ public class ResultSetTable extends AbstractTableModel {
 
 		while (rs.next()) {
 			ArrayList<Object> row = new ArrayList<Object>();
+			boolean emptyRow=true;
+			//filter out empty rows, in excel we can have empty cells
+			//and there's no easy way for the query engine to filter these.
 			for (int i = 1; i <= colCount; i++) {
+				Object obj = getObject(i, rs);
+				if(obj != null)
+					if(obj instanceof String) {
+						if(((String)obj).length() > 0)
+							emptyRow = false;
+					} else
+						emptyRow = false;
 				row.add(getObject(i, rs));
 			}
-			data.add(row);
+			if (!emptyRow) {
+				data.add(row);
+			}
 		}
 		sortCol = -1;
 		ascending = false;
 		fireTableStructureChanged();
 	}
 
-	protected Class getColClass(int colType){
+	protected Class<?> getColClass(int colType){
 		switch (colType) {
 		case Types.VARCHAR:
 			return String.class;

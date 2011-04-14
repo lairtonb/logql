@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with logQL.  If not, see <http://www.gnu.org/licenses/>.
 
-    $Id: InputStreamWrapper.java,v 1.2 2009/10/29 05:11:08 mreddy Exp $
+    $Id: InputStreamWrapper.java,v 1.2 2009-10-29 05:11:08 mreddy Exp $
 */
 package com.logql.util;
 
@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -45,13 +44,17 @@ public class InputStreamWrapper {
 	public InputStream getInputStream() throws IOException {
 		if (file != null) {
 			if (file.getName().toLowerCase().endsWith(".gz")) {
-				return new GZIPInputStream(new FileInputStream(file), 8192);
+				return new MultiMemberGZIPInputStream(new FileInputStream(file), 8192);
 			} else {
 				return new FileInputStream(file);
 			}
 		} else {
 			return zfile.getInputStream(zent);
 		}
+	}
+
+	public File getFile() {
+		return file;
 	}
 
 	public boolean validate() {
