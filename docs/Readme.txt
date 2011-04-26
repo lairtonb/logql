@@ -1,8 +1,8 @@
 *******************************
-*     logQL Version 1.4       *
+*     logQL Version 1.5       *
 *******************************
 
-November 2009
+April 2011
 
 1. Introduction
 2. Dependencies/system requirements
@@ -19,11 +19,10 @@ queries directly on files without any database.
 
 logQL supports the following file types:
 
-(a) Excel files.
-(b) CSV files.
-(c) Delimited record format. Where the fields are separated by a
+(a) CSV files.
+(b) Delimited record format. Where the fields are separated by a
     standard character, such as '|' or '\t'
-(d) Custom formats. Can have multiple types of delimiters per row 
+(c) Custom formats. Can have multiple types of delimiters per row 
     but the same format is present on all rows. For instance 
     HTTP access logs.
 
@@ -32,7 +31,7 @@ logQL supports the following file types:
 ----------------------
 logQL has the following dependencies:
 
-    Java(JRE) 1.5 or higher.
+    Java(JRE) 1.6 or higher.
 
 You can download java depending on the operating systems from:
 
