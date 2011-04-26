@@ -9,8 +9,8 @@
       <property name="classDir" value="classes"/>
       <property name="testClassesDir" value="testClasses"/>
       <property name="buildDir"		value="logQL"/>
-      <property name="jar" value="${project_name}/${project_name}.jar"/>
-      <property name="libPath" value="../lib/jfreechart.jar;../lib/poi-3.5-FINAL-20090928.jar;../lib/poi-scratchpad-3.5-FINAL-20090928.jar;../lib/poi-ooxml-3.5-FINAL-20090928.jar"/>
+      <property name="jar" value="${project_name}.jar"/>
+      <property name="libPath" value="../lib/junit-4.4.jar"/>
       <property name="testLibPath" value="${libPath};../lib/junit-4.4.jar;${jar}"/>
       <mkdir dir="${classDir}" />
       <mkdir dir="${buildDir}" />
@@ -19,26 +19,11 @@
       <mkdir dir="${buildDir}/samples"/>
       <copy todir="${buildDir}/samples">
         <fileset dir="../samples">
-          <include name="Excel-Queries.html"/>
-	       	<include name="expense.JPG"/>
           	<include name="ip-to-country.csv"/>
         	<include name="meta.xml"/>
         	<include name="style.css"/>
         	<include name="web-stats-Queries.html"/>
         </fileset>
-      </copy>
-      <mkdir dir="${buildDir}/lib" />
-      <copy todir="${buildDir}/lib/">
-      	<fileset file="../lib/jfreechart.jar"/>
-      	<fileset file="../lib/jfreechart-LGPL.txt"/>
-      	<fileset file="../lib/poi-3.5-FINAL-20090928.jar"/>
-      	<fileset file="../lib/poi-LICENSE"/>
-      	<fileset file="../lib/poi-scratchpad-3.5-FINAL-20090928.jar"/>
-      	<fileset file="../lib/poi-ooxml-3.5-FINAL-20090928.jar"/>
-      	<fileset file="../lib/ooxml-schemas-1.0.jar"/>
-      	<fileset file="../lib/dom4j-1.6.1.jar"/>
-        <fileset file="../lib/xmlbeans-2.3.0.jar"/>
-      	<fileset file="../lib/geronimo-stax-api_1.0_spec-1.0.jar"/>
       </copy>
       <copy todir="${buildDir}/">
         <fileset dir="../docs">
@@ -53,7 +38,7 @@
       	classpath="${libPath}"
       	destdir="${classDir}"
       	optimize="true"
-      	compiler="javac1.5">
+      	compiler="javac1.6">
       </javac>
     </target>
 
@@ -75,6 +60,7 @@
     </target>
 
     <target name="compile-tests" depends="jar">
+      <copy file="${jar}" todir="${project_name}"/>
       <javac srcdir="${testDir}" includes="test/logql/**/*.java" 
       	classpath="${testLibPath}"
       	destdir="${testClassesDir}"
