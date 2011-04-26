@@ -29,9 +29,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Vector;
@@ -75,42 +73,6 @@ public class QueryFrame extends JFrame {
 
 	public QueryFrame(String libPath){
 		super("logQL");
-
-		String[] cpath = { libPath+"/jfreechart.jar",
-				libPath + "/dom4j-1.6.1.jar",
-				libPath + "/geronimo-stax-api_1.0_spec-1.0.jar",
-				libPath + "/poi-3.6-20091214.jar",
-				libPath + "/poi-contrib-3.6-20091214.jar",
-				libPath + "/poi-ooxml-3.6-20091214.jar",
-				libPath + "/poi-ooxml-schemas-3.6-20091214.jar",
-				libPath + "/poi-scratchpad-3.6-20091214.jar",
-				libPath + "/xmlbeans-2.3.0.jar"};
-		try {
-			for (String lib : cpath) {
-				File lpath = new File(lib);
-				if (lpath.exists())
-					addURL(lpath.toURI().toURL());
-				else
-					throw new NullPointerException("Missing file: "
-							+ lpath.toString());
-			}
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Unable to load libraries:"
-					+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			System.exit(3);
-		}
-	}
-
-	private static final Class<?>[] parameters = new Class<?>[]{URL.class};
-
-	public static void addURL(URL u) throws Exception {
-		URLClassLoader sysloader = (URLClassLoader) ClassLoader
-				.getSystemClassLoader();
-		Class<?> sysclass = URLClassLoader.class;
-
-		Method method = sysclass.getDeclaredMethod("addURL", parameters);
-		method.setAccessible(true);
-		method.invoke(sysloader, new Object[] { u });
 	}
 
 	public void init(JMenuItem item){

@@ -217,29 +217,6 @@ public class LogCLI {
 		in.close();
 	}
 
-	public void setClasspath(){
-		String[] cpath = {"./lib/dom4j-1.6.1.jar",
-				"./lib/geronimo-stax-api_1.0_spec-1.0.jar",
-				"./lib/poi-3.6-20091214.jar",
-				"./lib/poi-contrib-3.6-20091214.jar",
-				"./lib/poi-ooxml-3.6-20091214.jar",
-				"./lib/poi-ooxml-schemas-3.6-20091214.jar",
-				"./lib/poi-scratchpad-3.6-20091214.jar",
-				"./lib/xmlbeans-2.3.0.jar"
-				};
-		try {
-			for (String lib : cpath) {
-				File lpath = new File(lib);
-				if (lpath.exists())
-					QueryFrame.addURL(lpath.toURI().toURL());
-				else
-					throw new NullPointerException("Missing file: "
-							+ lpath.toString());
-			}
-		} catch (Exception e) {
-			System.err.println("Unable to find POI jar files, Excel support is deactivated");
-		}
-	}
 	public static void main(String h[]){
 		if (h.length == 0) {
 			QueryFrame qf = new QueryFrame();
@@ -247,7 +224,6 @@ public class LogCLI {
 		} else {
 			LogCLI lcli = new LogCLI();
 			if (h[0].equalsIgnoreCase("-c")) {
-				lcli.setClasspath();
 				BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 				PrintStream out = System.out;
 				while (true) {
@@ -271,7 +247,6 @@ public class LogCLI {
 					e.printStackTrace();
 				}
 			} else if (h.length > 1) {
-				lcli.setClasspath();
 				lcli.processCli(h);
 			} else {
 				String[] usage = {"java -jar logQL.jar     use to launch UI",
