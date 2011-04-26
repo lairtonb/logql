@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Meta Files</title>
+
+
+  <style>
+<!--
+/* Font Definitions */
+@font-face
+{font-family:Wingdings;
+panose-1:5 0 0 0 0 0 0 0 0 0;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+{margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+{color:blue;
+text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+{color:purple;
+text-decoration:underline;}
+@page Section1
+{size:8.5in 11.0in;
+margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+{page:Section1;}
+/* List Definitions */
+ol
+{margin-bottom:0in;}
+ul
+{margin-bottom:0in;}
+-->
+  </style>
+</head>
+
+
+<body lang="EN-US" link="blue" vlink="purple">
+
+<div class="Section1"><span style="font-family: Arial;"></span>
+<p><b><u><span style="font-family: Arial;">Meta</span></u></b><b><u><span style="font-family: Arial;"> file:</span></u></b></p>
+
+<p><span style="font-family: Arial;">This is an
+xml file
+used to define the structure of the data file for logQL to read. This file
+contains:</span></p>
+
+<ol style="margin-top: 0in;" start="1" type="1">
+
+  <li><span style="font-family: Arial;">Configuration
+(standard/csv/delimited).</span></li>
+
+  <li><span style="font-family: Arial;">Field
+names.</span></li>
+
+  <li><span style="font-family: Arial;">Field
+types (and optionally formatting)</span></li>
+
+</ol>
+
+<p><span style="font-family: Arial;">The
+file
+stars with </span><span style="font-family: &quot;Courier New&quot;;">&lt;logQLConfig&gt;</span><span style="font-family: Arial;"> and ends with </span><span style="font-family: &quot;Courier New&quot;;">&lt;/logQLConfig&gt;</span><span style="font-family: Arial;">.</span></p>
+
+<p><span style="font-family: Arial;">If
+there is
+more than one meta defined in the file, you can optionally use </span></p>
+<pre>&lt;defaultConfig<br>name="apache-common"/&gt;</pre>
+<p></p>
+
+<span style="font-family: Arial;"><span style="text-decoration: underline;"><span style="font-weight: bold;"><br>
+
+</span></span></span>
+<p><span style="font-family: Arial;">There
+are
+three types of configurations:</span></p>
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+<p style="text-indent: -0.25in; margin-left: 0.25in;"><span style="font-family: Arial;">1.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style="font-family: Arial;">Standard</span></b><span style="font-family: Arial;">: This
+configuration is defined
+using the tag </span><span style="font-family: &quot;Courier New&quot;;">&lt;stdConfig&gt;.</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">It is used for
+data files where the field separator changes
+from one field to another. For example:</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: &quot;Courier New&quot;;">&lt;lineFormat
+variableChar="$"&gt;$a$-$b$
+$c$&lt;/lineFormat&gt;</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">In the above
+example, we have three fields: a, b and c. a and
+b are separated by '-'(hyphen). Where as b and c are separated by '
+'(space). </span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">The separator
+can be a single character or a sequence of
+characters:</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: &quot;Courier New&quot;;">$msg$
+from=$fadd$ to=$tadd$</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">In the example
+above, the fields are 'msg', 'fadd' and
+'tad'.&nbsp; Here we see 'from=' and 'to=' are separators.</span></p>
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+<p style="text-indent: -0.25in; margin-left: 0.25in;"><span style="font-family: Arial;">2.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style="font-family: Arial;">CSV</span></b><span style="font-family: Arial;">: This
+configuration is defined
+using the tag </span><span style="font-family: &quot;Courier New&quot;;">&lt;csvConfig&gt;</span><span style="font-family: Arial;">.</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">&nbsp;It is used on
+files where the fields are separated by comma
+character ','</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">&nbsp;CSV files
+commonly contain a header followed by the data,
+for this reason, the number of lines to skip can be specified in the
+configuration tag as follows:</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">&nbsp;</span><span style="font-family: &quot;Courier New&quot;;">&lt;csvConfig
+name="nfsData" skipLines =
+"7"&gt;</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">The fields
+defined in the Meta (instructions below) <u>should</u>
+be in the same order as they appear in the data file.</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+<p style="text-indent: -0.25in; margin-left: 0.25in;"><span style="font-family: Arial;">3.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style="font-family: Arial;">Delimiter/separator</span></b><span style="font-family: Arial;">: This
+configuration is defined
+using the tag </span><span style="font-family: &quot;Courier New&quot;;">&lt;sepConfig&gt;</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">It is used on
+files where the fields are separated by as
+standard separated/delimiter. The separator along with the number of
+lines to
+skip can be number of lines to skip can be specified as follows:</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: &quot;Courier New&quot;;">&lt;sepConfig
+name="sep" skipLines =
+"2" seperator="\t"&gt;</span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">The separator
+can be a single character or a sequence of
+characters. </span></p>
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">The fields
+defined in the Meta (instructions below) <u>should</u>
+be in the same order as they appear in the data file.</span></p>
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+<p><b><span style="font-family: Arial;">Field
+definition</span></b><span style="font-family: Arial;">:
+the
+fields in the file can be defined using the </span><span style="font-family: &quot;Courier New&quot;;">&lt;field&gt;</span><span style="font-family: Arial;"> tag. </span></p>
+
+<p><span style="font-family: Arial;">This
+tag
+requires the following attributes:</span></p>
+
+<p style="text-indent: -0.25in; margin-left: 0.75in;"><span style="font-family: Arial;">a.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">name:
+the name
+for the field, this should not contain any spaces.</span></p>
+
+<p style="text-indent: -0.25in; margin-left: 0.75in;"><span style="font-family: Arial;">b.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">type:
+this can
+be of type </span></p>
+
+<p style="text-indent: -1.25in; margin-left: 1.25in;"><span style="font-family: Arial;"><span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>i.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">string</span></p>
+
+<p style="text-indent: -1.25in; margin-left: 1.25in;"><span style="font-family: Arial;"><span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>ii.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">long:
+64 bit
+number.</span></p>
+
+<p style="text-indent: -1.25in; margin-left: 1.25in;"><span style="font-family: Arial;"><span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>iii.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">double/number/decimal:
+64 bit real number.</span></p>
+
+<p style="text-indent: -1.25in; margin-left: 1.25in;"><span style="font-family: Arial;"><span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>iv.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">date</span></p>
+
+<p style="text-indent: -0.25in; margin-left: 0.75in;"><span style="font-family: Arial;">c.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">format:
+required
+for type date. This specifies the date format in the file. For example
+'yyyy-MM-dd'.
+To know more please see: <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html">http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html</a>
+</span></p>
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+<p><u><span style="font-family: Arial;">For
+examples, please see 'meta.xml' this is packaged with logQL.</span></u></p>
+
+</div>
+
+</body>
+</html>

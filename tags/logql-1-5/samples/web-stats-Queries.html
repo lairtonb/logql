@@ -1,0 +1,14 @@
+<html><body>
+<ol>
+<li>Unique visitors:<br/><code>SELECT count(host)</code></li>
+<li>Number of visits<br/><code>SELECT count(*) where referer notlike '%.&lt;yoursite&gt;.com'</code></li>
+<li>Number of page hits<br/><code>SELECT count(*) where path like '%.htm' or path like '%.html'</code></li>
+<li>Daily report of page hits<br/><code>SELECT date, count(*) where path like '%.htm' or path like '%.html'</code></li>
+<li>Unique visitors broken on Date<br/><code>SELECT date, count(host)</code></li>
+<li>Unique visitors broken on week<br/><code>SELECT weekofyear(date), count(host)</code></li>
+<li>Get all the refering URLs<br/><code>SELECT referer, count(*)</code></li>
+<li>Get all refering domains<br/><code>SELECT strtok(referer, '/', 3), count(*)</code></li>
+<li>Get all the keywords from google search<br/><code>SELECT urlattribute(referer, 'q'), count(*) where referer like '%.google.com/%'</code></li>
+<li>Goals<br/><code>SELECT count(*) where path = '/buy.html' and host in (select host where referer like '%.google.com/%')</code></li>
+</ol>
+</body></html>

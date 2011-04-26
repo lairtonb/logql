@@ -1,0 +1,1192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  
+
+
+  
+  <title>Query Manual</title>
+  <style>
+<!--
+/* Font Definitions */
+@font-face
+{font-family:Wingdings;
+panose-1:5 0 0 0 0 0 0 0 0 0;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+{margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+{color:blue;
+text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+{color:purple;
+text-decoration:underline;}
+@page Section1
+{size:8.5in 11.0in;
+margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+{page:Section1;}
+/* List Definitions */
+ol
+{margin-bottom:0in;}
+ul
+{margin-bottom:0in;}
+-->
+  </style>
+</head>
+
+
+<body lang="EN-US" link="blue" vlink="purple">
+
+
+<div class="Section1"><span style="font-family: Arial;"></span>
+<p><b><u><span style="font-family: Arial;">Auto-Group
+and
+Auto-Sum:</span></u></b></p>
+
+
+<p><span style="font-family: Arial;">logQL
+automatically groups all string and date type fields. For all other
+number
+fields, it automatically sums. For instance the following query (from
+Quick
+Start section):</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="font-family: &quot;Courier New&quot;;">SELECT
+account, out</span></p>
+
+
+<p><span style="font-family: Arial;">is
+equivalent to the following in SQL:</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="font-family: &quot;Courier New&quot;;">SELECT
+account, sum(out)
+FROM acc GROUP BY account</span></p>
+
+
+<p><span style="font-family: Arial;">To
+disable
+Auto-Group and Auto-Sum, use the GREP command. Simply replace SELECT
+with GREP
+in your query. For instance:</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">GREP
+account, out</span></p>
+
+
+<p><span style="font-family: Arial;">Is
+the SQL
+equivalent of:</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+account, out FROM acc</span></p>
+
+
+<br>
+
+
+<b><u><span style="font-family: Arial;"><span style="text-decoration: none;"></span></span></u></b>
+<p><b><u><span style="font-family: Arial;">Parts
+of a logQL Query</span></u></b><span style="font-family: Arial;">:</span></p>
+
+
+<p><span style="font-family: Arial;">There
+are
+four parts to logQL query. Not all parts are always required.</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">1.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">SELECT/GREP:
+Used to specify the required fields in the output.</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">2.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">FROM:
+The data
+files to query on.</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">3.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">USE:
+The Meta
+to use to query the data file.</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">4.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">WHERE:
+The
+filter
+conditions.</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">5.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">ORBER
+BY: Sort
+the output on one or more fields.</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><b><u><span style="font-family: Arial;">SELECT/GREP:
+</span></u></b><span style="font-family: Arial;">&nbsp;This
+is used to select the fields
+from the data file. As mentioned in section titled 'Auto-Group and
+Auto-Sum'
+select results are automatically grouped and summed. </span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+&lt;comma separated list of fields&gt;</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+account, in, out</span></p>
+
+
+<p><u><span style="font-family: Arial;">Column
+Alias</span></u><span style="font-family: Arial;">:
+An alias can
+be entered for the column with the following syntax:</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+&lt;field1&gt; "&lt;alias1&gt;", &lt;field2&gt; "alias"</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+account "A/c", out "Credit"</span></p>
+
+
+<p><u><span style="font-family: Arial;">Tip:</span></u><span style="font-family: Arial;"> To find all
+the distinct values in
+a give field, execute the query </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+&lt;fieldName&gt;</span><span style="font-family: Arial;"> </span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><b><u><span style="font-family: Arial;">From:</span></u></b><span style="font-family: Arial;"> This is used
+to select the files to
+query on. You can query a single file or multiple files:</span></p>
+
+
+<ol style="margin-top: 0in;" start="1" type="1">
+
+
+  <li><span style="font-family: Arial;">Single
+file: </span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Syntax:</span><span style="font-family: &quot;Courier New&quot;;"> FROM
+&lt;filename&gt;.</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+account.xls</span></p>
+
+
+<ol style="margin-top: 0in;" start="2" type="1">
+
+
+  <li><span style="font-family: Arial;">Comma
+separated:</span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+&lt;fileName1&gt;, &lt;fileName2&gt;</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+account.xls, ./old/nov-account.xls, ./old/oct-account.xls</span></p>
+
+
+<ol style="margin-top: 0in;" start="3" type="1">
+
+
+  <li><span style="font-family: Arial;">Wild
+card:</span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+&lt;partialName&gt;*.xls</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+./old/*-account-2007.xls</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+./old/*-account-*.xls</span></p>
+
+
+<ol style="margin-top: 0in;" start="4" type="1">
+
+
+  <li><span style="font-family: Arial;">Single
+zip file:</span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+&lt;fileName&gt;@&lt;zipFileName&gt;</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+jon-nov-2007.xls@emp-expenses.zip</span></p>
+
+
+<ol style="margin-top: 0in;" start="5" type="1">
+
+
+  <li><span style="font-family: Arial;">Wild
+card file name:</span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+jon-*-2007.xls@emp-expenses.zip</span></p>
+
+
+<ol style="margin-top: 0in;" start="6" type="1">
+
+
+  <li><span style="font-family: Arial;">Wild
+card zip files:</span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">FROM
+jon.xls@*-expenses.zip</span></p>
+
+
+<span style="font-family: Arial;"></span>&nbsp;
+<p><b><u><span style="font-family: Arial;">Use:
+</span></u></b><span style="font-family: Arial;">Specify
+the
+Meta to use when reading
+the data file.</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<ol style="margin-top: 0in;" start="1" type="1">
+
+
+  <li><span style="font-family: Arial;">Custom
+Meta: Used when you have the meta defined in an XML file as described
+in the section 'Meta file'. This can be used in two ways:</span></li>
+
+
+  
+  <ol style="margin-top: 0in;" start="1" type="a">
+
+
+    <li><span style="font-family: Arial;">If
+the meta file has only one meta or the default configuration defined:</span></li>
+
+
+  
+  </ol>
+
+
+</ol>
+
+
+<p style="margin-left: 1.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">USE
+&lt;metafile&gt;</span></p>
+
+
+<p style="margin-left: 1.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">USE
+./meta/apacheConfig.xml</span></p>
+
+
+<ol style="margin-top: 0in;" start="1" type="1">
+
+
+  
+  <ol style="margin-top: 0in;" start="2" type="a">
+
+
+    <li><span style="font-family: Arial;">If
+specify a meta in a given configuration file:</span></li>
+
+
+  
+  </ol>
+
+
+</ol>
+
+
+<p style="margin-left: 1.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">USE
+&lt;metaName&gt;@&lt;filename&gt;</span></p>
+
+
+<p style="margin-left: 1.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">USE
+apacheCommon@meta.xml</span></p>
+
+
+<ol style="margin-top: 0in;" start="2" type="1">
+
+
+  <li style="margin-top: 12pt;"><span style="font-family: Arial;">CSV files: It
+is recommended that you define a meta as described in the section 'Meta
+file' and use this when querying CSV files. </span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">To run queries
+on the CSV file without defining the meta use
+the function:</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">USE
+csv(&lt;headerLine&gt;)</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">USE
+csv(3)</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: &quot;Courier New&quot;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+USE csv</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Note that
+&lt;headerLine&gt; is an optional parameter. By
+default, it assumes the header to be at line 1.</span></p>
+
+
+<p style="margin-left: 0.5in;"><u><span style="font-family: Arial;">IMPORTANT</span></u><span style="font-family: Arial;">: By default,
+logQL assumes all the fields to be of type
+string. To know how to change type information, see section 'Changing
+types'.</span></p>
+
+
+<ol style="margin-top: 0in;" start="3" type="1">
+
+
+  <li style="margin-top: 12pt;"><span style="font-family: Arial;">Delimiter
+files: used when all the fields have a standard delimiter.</span><span style="font-family: Arial;"> </span><span style="font-family: Arial;">It is
+recommended that you define a meta as described in the section 'Meta
+file' and use this meta.</span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">To run queries
+on these files without defining the meta use
+the function:</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">USE sep
+(&lt;sep&gt;,&lt;headerLine&gt;)</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">USE
+sep( '\t', 4)</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-family: &quot;Courier New&quot;;">USE
+sep('\t')</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Note that
+&lt;headerLine&gt; is an optional parameter. By
+default, it assumes the header to be at line 1.</span></p>
+
+
+<p style="margin-left: 0.5in;"><u><span style="font-family: Arial;">IMPORTANT</span></u><span style="font-family: Arial;">: By default,
+logQL assumes all the fields to be of type
+string. To know how to change type information, see section 'Changing
+types'.</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><b><span style="font-family: Arial;">Changing
+types:</span></b><span style="font-family: Arial;">
+when using
+csv or sep functions, logQL assumes all the fields to be of type
+string.
+However, logQL does allow you to change this to type number or date:</span></p>
+
+
+<ol style="margin-top: 0in;" start="1" type="1">
+
+
+  <li><span style="font-family: Arial;">To
+change to number simply use the sum function</span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">sum(&lt;fieldName&gt;)</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+account, sum(out) FROM account.csv USE csv</span></p>
+
+
+<ol style="margin-top: 0in;" start="2" type="1">
+
+
+  <li><span style="font-family: Arial;">To
+change to date, use the todate command:</span></li>
+
+
+</ol>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">todate(&lt;fieldname&gt;,
+&lt;format&gt;)</span></p>
+
+
+<p style="margin-left: 1in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+todate(date,"dd-MMM-yy") FROM account.csv USE csv</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><b><u><span style="font-family: Arial;">Where:</span></u></b><b><span style="font-family: Arial;"> </span></b><span style="font-family: Arial;">The where
+clause is used to filter the input data based on a certain
+condition</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+&lt;fields&gt; WHERE &lt;condition&gt;</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+description, out WHERE account = "Food"</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><span style="font-family: Arial;">The
+following operators are supported:</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<table style="border: medium none ; border-collapse: collapse;" border="1" cellpadding="0" cellspacing="0">
+
+
+  <tbody>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">=</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">Equals</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">#</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">Not equals</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">&gt;&nbsp;</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">Greater
+than</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">&lt;&nbsp;</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">Lesser
+than</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">LIKE</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">Search
+for a pattern. Use '%' for wild card.</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">NOTLIKE</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">Ensure
+pattern does not exist</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">IN</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">List of
+possible column values</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">NOTIN</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">List of
+values to exclude</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+  
+  </tbody>
+</table>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><span style="font-family: Arial;">IMPORTANT:
+a field can only be compared to a value, logQL currently does not allow
+comparison of two fields.</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><span style="font-family: Arial;">The
+following binary operators are supported to club multiple conditions:</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<table style="border: medium none ; border-collapse: collapse;" border="1" cellpadding="0" cellspacing="0">
+
+
+  <tbody>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">and</span></p>
+
+
+      </td>
+
+
+      <td width="295">
+      
+      <p><span style="font-family: Arial;">Both
+conditions must evaluate to true</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">or</span></p>
+
+
+      </td>
+
+
+      <td valign="top" width="295">
+      
+      <p><span style="font-family: Arial;">Either of
+the conditions must evaluate to true</span></p>
+
+
+      </td>
+
+
+    </tr>
+
+
+  
+  </tbody>
+</table>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><b><u><span style="font-family: Arial;"><span style="text-decoration: none;"></span></span></u></b><u><span style="font-family: Arial;">Inner
+queries:</span></u><span style="font-family: Arial;">
+Where
+clause supports inner queries with the IN operator<br>
+
+
+&nbsp;</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+&lt;fields&gt; WHERE &lt;field&gt; IN
+(&lt;query&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+description, out WHERE account IN (select account WHERE
+out &gt;50)</span></p>
+
+
+<p><span style="font-family: Arial;">IMPORTANT:
+the inner query should return only one column.</span></p>
+
+
+<p><b><u><span style="font-family: Arial;"><span style="text-decoration: none;"></span></span></u></b></p>
+
+
+<p><b><u><span style="font-family: Arial;">String
+functions:</span></u></b></p>
+
+
+<p><span style="font-family: Arial;">All
+of the
+following functions can be used in </span><span style="font-family: &quot;Courier New&quot;;">SELECT</span><span style="font-family: Arial;"> or </span><span style="font-family: &quot;Courier New&quot;;">WHERE</span><span style="font-family: Arial;"> clause</span><br>
+
+
+<span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">1.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">strtok:
+String
+Tokenizer breaks the string into tokens based on a separator character
+and
+picks the token specified.</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">strtok(&lt;field|function&gt;,&lt;token&gt;,&lt;position&gt;,
+&lt;strict true|false&gt;)</span></p>
+
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">For instance,
+assume we have a path 'Apparel/Mens/Shirts/formal.html'.
+</span><span style="font-family: &quot;Courier New&quot;;">strtok(path,
+'/', 2)</span><span style="font-family: Arial;">
+will return
+'Mens'<br>
+
+
+&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">The option
+strict is used to indicate if the last token
+should be used; if the total number of tokens is less than required
+tokens. If
+the value is false, the last token is returned. </span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Data:
+'Apparel/Mens/Shirts/formal.html'</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">strtok(path,
+'/',10,false)</span><span style="font-family: Arial;">
+will return
+'formal.html'</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">strtok(path,
+'/',10,true)</span><span style="font-family: Arial;">
+will return
+empty string ''</span></p>
+
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">&nbsp;<br>
+
+
+This can be
+used in the SELECT clause as well as the WHERE
+clause.</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+strtok(path, '/',3), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE strtok(path,'/',2) =
+'Mens'</span></p>
+
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">2.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">hostname:
+for a
+column containing IP address, this function returns the host name or
+the same
+IP if it is not able to resolve. </span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">hostname(&lt;fieldName&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples:</span><span style="font-family: &quot;Courier New&quot;;"> SELECT
+hostname(ip), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+hostname(ip), bytes WHERE hostname(ip) like
+'%.us.comp%'</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">3.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">urldecode:
+Decodes a string from the application/x-www-form-urlencoded&nbsp;
+MIME format.</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">urldecode(&lt;fieldName&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples:</span><span style="font-family: &quot;Courier New&quot;;"> SELECT
+urldecode(referer), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE urldecode(referrer) like
+'%key word%'</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">4.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">tolowercase:
+Converts the string to lower case. </span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">tolowercase(&lt;fieldName&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples</span><span style="font-family: &quot;Courier New&quot;;">:
+SELECT tolowercase(account), out</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+description, out WHERE tolowercase(account) =
+food</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">5.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">touppercase:
+Converts the string to upper case.</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">touppercase(&lt;fieldName&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples:</span><span style="font-family: &quot;Courier New&quot;;"> SELECT
+touppercase(account), out</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+description, out WHERE touppercase(account) =
+FOOD</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p><b><u><span style="font-family: Arial;">Date
+functions:</span></u></b></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">1.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">day:
+This is
+the
+default function for all date values. It returns the date in
+'dd-MMM-yy'
+format. </span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">day(&lt;dateField&gt;,
+&lt;outputFormat&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples: </span><span style="font-family: &quot;Courier New&quot;;">day(date),
+day(date, 'MMM-dd')</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+day(date, 'MMM-dd'), count(*)</span></p>
+
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">When using this
+function in the where clause, you can enter
+the value in either of the formats ("MM-dd-yyyy",
+"MMM-dd-yyyy","dd-MMM-yyyy",
+"yyyy-MM-dd")</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+description, out WHERE date = 'Feb-02-2007'</span></p>
+
+
+<p style="margin-left: 0.25in;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">2.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">hour:
+Returns
+the hour of day</span></p>
+
+
+<p style="margin-left: 0.5in; text-align: justify;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">hour(&lt;dateField&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in; text-align: justify;"><span style="font-family: Arial;">Examples: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+hour(date), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in; text-align: justify;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE
+hour(date) = 15;</span></p>
+
+
+<p style="text-align: justify;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">3.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">dayofweek:
+Returns the day of the week (Sunday, Monday, &hellip;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">dayofweek(&lt;dateField&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+dayofweek(&lt;dateField&gt;), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT&nbsp;
+path, count(*) WHERE dayofweek(date) =
+Wednesday</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">4.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">weekofmonth:
+Returns the week of the month (W1, W2, &hellip;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">weekofmonth(&lt;dateField&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+weekofmonth(date), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE weekofmonth(date) = W1</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">5.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">weekofyear:
+Returns the week of the year (W1, W2, &hellip;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">weekofyear(&lt;dateField&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+weekofyear(date), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE weekofyear(date)&nbsp; = W18</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">6.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">month:
+Returns
+the month (January, February, &hellip;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">month(&lt;dateField&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+month(date), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE month(date) = January</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">7.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">dayofmonth:
+Returns the day of month (1, 2, 3, &hellip;) </span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">dayofmonth(&lt;dateField&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+dayofmonth(date), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE dayofmonth(date) = 15</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">8.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">year:
+Returns
+the year</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">year(&lt;dateField&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+year(date), count(*)</span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE year(date) = 2007</span></p>
+
+
+<p><span style="font-family: Arial;">&nbsp;</span></p>
+
+
+<p style="margin-left: 0.25in; text-indent: -0.25in;"><span style="font-family: Arial;">9.<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style="font-family: Arial;">todate:
+This
+function has been described before for converting string type to date
+in case
+of CSV or Delimited files. It can also be used for to give specific
+values to
+the date function.</span></p>
+
+
+<p style="margin-left: 0.5in; text-align: justify;"><span style="font-family: Arial;">Syntax: </span><span style="font-family: &quot;Courier New&quot;;">todate(&lt;dateValue&gt;,&lt;dateFormat&gt;)</span></p>
+
+
+<p style="margin-left: 0.5in; text-align: justify;"><span style="font-family: Arial;">Example: </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, count(*) WHERE
+date &gt; todate('jan-05-07','MMM-dd-yy')</span></p>
+
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-size: 10pt; font-family: &quot;Courier New&quot;;"><o:p></o:p></span></p>
+
+
+</div>
+
+
+<br>
+
+
+<p><b style=""><u><span style="font-family: Arial;">Count function:</span></u></b><span style="font-family: Arial;"> This function returns the number of rows in a query.<o:p></o:p></span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Syntax: </span><span class="GramE"><span style="font-family: &quot;Courier New&quot;;">count(</span></span><span style="font-family: &quot;Courier New&quot;;">expression)<o:p></o:p></span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: Arial;">Examples </span><span style="font-family: &quot;Courier New&quot;;">SELECT
+path, <span class="GramE">count(</span>*)<o:p></o:p></span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT <span class="GramE">count(</span>host)<o:p></o:p></span></p>
+
+
+<p style="margin-left: 0.5in;"><span style="font-family: &quot;Courier New&quot;;">SELECT host, <span class="GramE">count(</span>path)<o:p></o:p></span></p>
+
+
+</body>
+</html>

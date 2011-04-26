@@ -1,0 +1,31 @@
+th {
+	color:#555580;
+	background-color:#E4EADF;
+	font:bold 7pt/12pt Verdana, Arial, Helvetica, sans-serif;
+	vertical-align:top;
+	text-align:left;
+	padding:1px 5px 3px 5px;
+	border-right:1px solid #CCCCDD;
+	white-space:nowrap;
+}
+td {
+	color:#000000;
+	font:8pt/12pt Verdana, Arial, Helvetica, sans-serif;
+	vertical-align:top;
+	padding:3px 5px 3px 5px;
+	border-right:1px solid #CCCCDD;
+	border-top:1px solid #555580;
+}
+table {
+	border-top:2px solid #CCCCDD;
+	border-right:none;
+	border-bottom:1px solid #555580;
+	border-left:1px solid #CCCCDD;
+}
+b {
+	font:bold 16pt Verdana, Arial, Helvetica, sans-serif;
+}
+table tr:hover td {
+	background-color:#EEEEEE;
+	border-bottom-color:#EEEEEE;
+}
